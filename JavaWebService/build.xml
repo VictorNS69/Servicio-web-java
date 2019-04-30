@@ -2,7 +2,7 @@
 <project basedir="." default="jar.server">
     <!--Auto generated ant build file-->
     <property environment="env"/>
-    <property name="axis2.home" value="/usr/local/apache-tomcat-9.0.17/webapps/axis2"/>
+    <property name="axis2.home" value="${env.AXIS2_HOME}"/>
     <property name="project.base.dir" value="."/>
     <property name="maven.class.path" value=""/>
     <property name="name" value="UserManagementWS"/>
