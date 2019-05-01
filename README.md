@@ -21,12 +21,14 @@ El WSDL del servicio **_UPMCourses_** dispone de las siguinetes operaciones:
 ## Enunciado
 Para ver el enunciado de la práctica pincha [aquí](/doc/PracticaSW2019.pdf).
 
+## Uso de comandos 
+\#TODO
 ## Requisitos
 \#TODO
 
 ## Importar proyecto
 \#TODO
-## Activar el servidor localhost de Tomcat desde Eclipse
+## Activar el servidor localhost de Tomcat desde Eclipse (o terminal)
 \#TODO
 ## Memoria del proyecto
 \#TODO
