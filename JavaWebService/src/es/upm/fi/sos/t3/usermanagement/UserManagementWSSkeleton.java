@@ -14,7 +14,7 @@ public class UserManagementWSSkeleton{
 
 	/**
 	 * un usuario (superuser incluido) ya registrado y que ha iniciado sesión pueda
-	 * cambiar su contraseña
+     * cambiar su contraseña
 	 * 
 	 * @param changePassword 
 	 * @return changePasswordResponse 
@@ -65,6 +65,7 @@ public class UserManagementWSSkeleton{
 
 
 	/**
+
 	 * consultar la lista de asignaturas
 	 * de un curso determinado
 	 * 
@@ -100,7 +101,7 @@ public class UserManagementWSSkeleton{
 
 
 	/**
-	 * añade un usuario al sistema
+	 *  añade un usuario al sistema
 	 * 
 	 * @param addUser 
 	 * @return addUserResponse 

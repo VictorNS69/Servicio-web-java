@@ -104,6 +104,51 @@
                              }
                              
 
+                        /**
+                        * field for Result
+                        */
+
+                        
+                                    protected boolean localResult ;
+                                
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localResultTracker = false ;
+
+                           public boolean isResultSpecified(){
+                               return localResultTracker;
+                           }
+
+                           
+
+                           /**
+                           * Auto generated getter method
+                           * @return boolean
+                           */
+                           public  boolean getResult(){
+                               return localResult;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param Result
+                               */
+                               public void setResult(boolean param){
+                            
+                                       // setting primitive attribute tracker to true
+                                       localResultTracker =
+                                       true;
+                                   
+                                            this.localResult=param;
+                                    
+
+                               }
+                            
+
      
      
         /**
@@ -199,7 +244,20 @@
                                     
                              }
 
-                        }
+                        } if (localResultTracker){
+                                    namespace = "http://usermanagement.t3.sos.fi.upm.es/xsd";
+                                    writeStartElement(null, namespace, "result", xmlWriter);
+                             
+                                               if (false) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("result cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localResult));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
+                             }
                     xmlWriter.writeEndElement();
                
 
@@ -411,7 +469,13 @@
                                 
                             }
 
-                        }
+                        } if (localResultTracker){
+                                      elementList.add(new javax.xml.namespace.QName("http://usermanagement.t3.sos.fi.upm.es/xsd",
+                                                                      "result"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localResult));
+                            }
 
                 return new org.apache.axis2.databinding.utils.reader.ADBXMLStreamReaderImpl(qName, elementList.toArray(), attribList.toArray());
             
@@ -542,6 +606,30 @@
                                                     object.setCourseList((java.lang.String[])
                                                         list1.toArray(new java.lang.String[list1.size()]));
                                                 
+                              }  // End of if for expected property start element
+                                
+                                    else {
+                                        
+                                    }
+                                
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://usermanagement.t3.sos.fi.upm.es/xsd","result").equals(reader.getName())){
+                                
+                                    nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance","nil");
+                                    if ("true".equals(nillableValue) || "1".equals(nillableValue)){
+                                        throw new org.apache.axis2.databinding.ADBException("The element: "+"result" +"  cannot be null");
+                                    }
+                                    
+
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setResult(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
+                                              
+                                        reader.next();
+                                    
                               }  // End of if for expected property start element
                                 
                                     else {
