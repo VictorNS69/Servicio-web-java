@@ -25,46 +25,141 @@
             
 
                         /**
-                        * field for GradesList
+                        * field for Courses
+                        * This was an Array!
                         */
 
                         
-                                    protected java.lang.Object localGradesList ;
+                                    protected java.lang.String[] localCourses ;
                                 
                            /*  This tracker boolean wil be used to detect whether the user called the set method
                           *   for this attribute. It will be used to determine whether to include this field
                            *   in the serialized XML
                            */
-                           protected boolean localGradesListTracker = false ;
+                           protected boolean localCoursesTracker = false ;
 
-                           public boolean isGradesListSpecified(){
-                               return localGradesListTracker;
+                           public boolean isCoursesSpecified(){
+                               return localCoursesTracker;
                            }
 
                            
 
                            /**
                            * Auto generated getter method
-                           * @return java.lang.Object
+                           * @return java.lang.String[]
                            */
-                           public  java.lang.Object getGradesList(){
-                               return localGradesList;
+                           public  java.lang.String[] getCourses(){
+                               return localCourses;
                            }
 
                            
                         
-                            /**
-                               * Auto generated setter method
-                               * @param param GradesList
-                               */
-                               public void setGradesList(java.lang.Object param){
-                            localGradesListTracker = true;
-                                   
-                                            this.localGradesList=param;
-                                    
 
-                               }
+
+                               
+                              /**
+                               * validate the array for Courses
+                               */
+                              protected void validateCourses(java.lang.String[] param){
+                             
+                              }
+
+
+                             /**
+                              * Auto generated setter method
+                              * @param param Courses
+                              */
+                              public void setCourses(java.lang.String[] param){
+                              
+                                   validateCourses(param);
+
+                               localCoursesTracker = true;
+                                      
+                                      this.localCourses=param;
+                              }
+
+                               
+                             
+                             /**
+                             * Auto generated add method for the array for convenience
+                             * @param param java.lang.String
+                             */
+                             public void addCourses(java.lang.String param){
+                                   if (localCourses == null){
+                                   localCourses = new java.lang.String[]{};
+                                   }
+
                             
+                                 //update the setting tracker
+                                localCoursesTracker = true;
+                            
+
+                               java.util.List list =
+                            org.apache.axis2.databinding.utils.ConverterUtil.toList(localCourses);
+                               list.add(param);
+                               this.localCourses =
+                             (java.lang.String[])list.toArray(
+                            new java.lang.String[list.size()]);
+
+                             }
+                             
+
+                        /**
+                        * field for Grades
+                        * This was an Array!
+                        */
+
+                        
+                                    protected double[] localGrades ;
+                                
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localGradesTracker = false ;
+
+                           public boolean isGradesSpecified(){
+                               return localGradesTracker;
+                           }
+
+                           
+
+                           /**
+                           * Auto generated getter method
+                           * @return double[]
+                           */
+                           public  double[] getGrades(){
+                               return localGrades;
+                           }
+
+                           
+                        
+
+
+                               
+                              /**
+                               * validate the array for Grades
+                               */
+                              protected void validateGrades(double[] param){
+                             
+                              }
+
+
+                             /**
+                              * Auto generated setter method
+                              * @param param Grades
+                              */
+                              public void setGrades(double[] param){
+                              
+                                   validateGrades(param);
+
+                               localGradesTracker = true;
+                                      
+                                      this.localGrades=param;
+                              }
+
+                               
+                             
 
                         /**
                         * field for Result
@@ -169,29 +264,78 @@
 
                
                    }
-                if (localGradesListTracker){
-                            
-                            if (localGradesList!=null){
-                                if (localGradesList instanceof org.apache.axis2.databinding.ADBBean){
-                                    ((org.apache.axis2.databinding.ADBBean)localGradesList).serialize(
-                                               new javax.xml.namespace.QName("http://usermanagement.t3.sos.fi.upm.es/xsd","gradesList"),
-                                               xmlWriter,true);
-                                 } else {
-                                    writeStartElement(null, "http://usermanagement.t3.sos.fi.upm.es/xsd", "gradesList", xmlWriter);
-                                    org.apache.axis2.databinding.utils.ConverterUtil.serializeAnyType(localGradesList, xmlWriter);
-                                    xmlWriter.writeEndElement();
-                                 }
-                            } else {
-                                
+                if (localCoursesTracker){
+                             if (localCourses!=null) {
+                                   namespace = "http://usermanagement.t3.sos.fi.upm.es/xsd";
+                                   for (int i = 0;i < localCourses.length;i++){
+                                        
+                                            if (localCourses[i] != null){
+                                        
+                                                writeStartElement(null, namespace, "courses", xmlWriter);
+
+                                            
+                                                        xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCourses[i]));
+                                                    
+                                                xmlWriter.writeEndElement();
+                                              
+                                                } else {
+                                                   
+                                                           // write null attribute
+                                                            namespace = "http://usermanagement.t3.sos.fi.upm.es/xsd";
+                                                            writeStartElement(null, namespace, "courses", xmlWriter);
+                                                            writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","nil","1",xmlWriter);
+                                                            xmlWriter.writeEndElement();
+                                                       
+                                                }
+
+                                   }
+                             } else {
+                                 
+                                         // write the null attribute
                                         // write null attribute
-                                           writeStartElement(null, "http://usermanagement.t3.sos.fi.upm.es/xsd", "gradesList", xmlWriter);
+                                           writeStartElement(null, "http://usermanagement.t3.sos.fi.upm.es/xsd", "courses", xmlWriter);
 
                                            // write the nil attribute
                                            writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","nil","1",xmlWriter);
                                            xmlWriter.writeEndElement();
                                     
-                            }
+                             }
 
+                        } if (localGradesTracker){
+                             if (localGrades!=null) {
+                                   namespace = "http://usermanagement.t3.sos.fi.upm.es/xsd";
+                                   for (int i = 0;i < localGrades.length;i++){
+                                        
+                                                   if (!java.lang.Double.isNaN(localGrades[i])) {
+                                               
+                                                writeStartElement(null, namespace, "grades", xmlWriter);
+
+                                            
+                                                xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localGrades[i]));
+                                                xmlWriter.writeEndElement();
+                                            
+                                                } else {
+                                                   
+                                                           // write null attribute
+                                                            namespace = "http://usermanagement.t3.sos.fi.upm.es/xsd";
+                                                            writeStartElement(null, namespace, "grades", xmlWriter);
+                                                            writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","nil","1",xmlWriter);
+                                                            xmlWriter.writeEndElement();
+                                                       
+                                                }
+
+                                   }
+                             } else {
+                                 
+                                         // write the null attribute
+                                        // write null attribute
+                                           writeStartElement(null, "http://usermanagement.t3.sos.fi.upm.es/xsd", "grades", xmlWriter);
+
+                                           // write the nil attribute
+                                           writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","nil","1",xmlWriter);
+                                           xmlWriter.writeEndElement();
+                                    
+                             }
 
                         } if (localResultTracker){
                                     namespace = "http://usermanagement.t3.sos.fi.upm.es/xsd";
@@ -391,14 +535,54 @@
                  java.util.ArrayList elementList = new java.util.ArrayList();
                  java.util.ArrayList attribList = new java.util.ArrayList();
 
-                 if (localGradesListTracker){
-                            elementList.add(new javax.xml.namespace.QName("http://usermanagement.t3.sos.fi.upm.es/xsd",
-                                                                      "gradesList"));
-                            
-                            
-                                    elementList.add(localGradesList==null?null:
-                                    localGradesList);
-                                } if (localResultTracker){
+                 if (localCoursesTracker){
+                            if (localCourses!=null){
+                                  for (int i = 0;i < localCourses.length;i++){
+                                      
+                                         if (localCourses[i] != null){
+                                          elementList.add(new javax.xml.namespace.QName("http://usermanagement.t3.sos.fi.upm.es/xsd",
+                                                                              "courses"));
+                                          elementList.add(
+                                          org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCourses[i]));
+                                          } else {
+                                             
+                                                    elementList.add(new javax.xml.namespace.QName("http://usermanagement.t3.sos.fi.upm.es/xsd",
+                                                                              "courses"));
+                                                    elementList.add(null);
+                                                
+                                          }
+                                      
+
+                                  }
+                            } else {
+                              
+                                    elementList.add(new javax.xml.namespace.QName("http://usermanagement.t3.sos.fi.upm.es/xsd",
+                                                                              "courses"));
+                                    elementList.add(null);
+                                
+                            }
+
+                        } if (localGradesTracker){
+                            if (localGrades!=null){
+                                  for (int i = 0;i < localGrades.length;i++){
+                                      
+                                          elementList.add(new javax.xml.namespace.QName("http://usermanagement.t3.sos.fi.upm.es/xsd",
+                                                                                                                       "grades"));
+                                          elementList.add(
+                                          org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localGrades[i]));
+
+                                      
+
+                                  }
+                            } else {
+                              
+                                    elementList.add(new javax.xml.namespace.QName("http://usermanagement.t3.sos.fi.upm.es/xsd",
+                                                                              "grades"));
+                                    elementList.add(null);
+                                
+                            }
+
+                        } if (localResultTracker){
                                       elementList.add(new javax.xml.namespace.QName("http://usermanagement.t3.sos.fi.upm.es/xsd",
                                                                       "result"));
                                  
@@ -480,16 +664,123 @@
                     
                     reader.next();
                 
+                        java.util.ArrayList list1 = new java.util.ArrayList();
+                    
+                        java.util.ArrayList list2 = new java.util.ArrayList();
+                    
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://usermanagement.t3.sos.fi.upm.es/xsd","gradesList").equals(reader.getName())){
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://usermanagement.t3.sos.fi.upm.es/xsd","courses").equals(reader.getName())){
                                 
-                                     object.setGradesList(org.apache.axis2.databinding.utils.ConverterUtil.getAnyTypeObject(reader,
-                                                es.upm.fi.sos.t3.usermanagement.ExtensionMapper.class));
-                                       
-                                         reader.next();
-                                     
+                                    
+                                    
+                                    // Process the array and step past its final element's end.
+                                    
+                                              nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance","nil");
+                                              if ("true".equals(nillableValue) || "1".equals(nillableValue)){
+                                                  list1.add(null);
+                                                       
+                                                  reader.next();
+                                              } else {
+                                            list1.add(reader.getElementText());
+                                            }
+                                            //loop until we find a start element that is not part of this array
+                                            boolean loopDone1 = false;
+                                            while(!loopDone1){
+                                                // Ensure we are at the EndElement
+                                                while (!reader.isEndElement()){
+                                                    reader.next();
+                                                }
+                                                // Step out of this element
+                                                reader.next();
+                                                // Step to next element event.
+                                                while (!reader.isStartElement() && !reader.isEndElement())
+                                                    reader.next();
+                                                if (reader.isEndElement()){
+                                                    //two continuous end elements means we are exiting the xml structure
+                                                    loopDone1 = true;
+                                                } else {
+                                                    if (new javax.xml.namespace.QName("http://usermanagement.t3.sos.fi.upm.es/xsd","courses").equals(reader.getName())){
+                                                         
+                                                          nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance","nil");
+                                                          if ("true".equals(nillableValue) || "1".equals(nillableValue)){
+                                                              list1.add(null);
+                                                                   
+                                                              reader.next();
+                                                          } else {
+                                                        list1.add(reader.getElementText());
+                                                        }
+                                                    }else{
+                                                        loopDone1 = true;
+                                                    }
+                                                }
+                                            }
+                                            // call the converter utility  to convert and set the array
+                                            
+                                                    object.setCourses((java.lang.String[])
+                                                        list1.toArray(new java.lang.String[list1.size()]));
+                                                
+                              }  // End of if for expected property start element
+                                
+                                    else {
+                                        
+                                    }
+                                
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://usermanagement.t3.sos.fi.upm.es/xsd","grades").equals(reader.getName())){
+                                
+                                    
+                                    
+                                    // Process the array and step past its final element's end.
+                                    
+                                              nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance","nil");
+                                              if ("true".equals(nillableValue) || "1".equals(nillableValue)){
+                                                  list2.add(String.valueOf(java.lang.Double.NaN));
+                                                       
+                                                  reader.next();
+                                              } else {
+                                            list2.add(reader.getElementText());
+                                            }
+                                            //loop until we find a start element that is not part of this array
+                                            boolean loopDone2 = false;
+                                            while(!loopDone2){
+                                                // Ensure we are at the EndElement
+                                                while (!reader.isEndElement()){
+                                                    reader.next();
+                                                }
+                                                // Step out of this element
+                                                reader.next();
+                                                // Step to next element event.
+                                                while (!reader.isStartElement() && !reader.isEndElement())
+                                                    reader.next();
+                                                if (reader.isEndElement()){
+                                                    //two continuous end elements means we are exiting the xml structure
+                                                    loopDone2 = true;
+                                                } else {
+                                                    if (new javax.xml.namespace.QName("http://usermanagement.t3.sos.fi.upm.es/xsd","grades").equals(reader.getName())){
+                                                         
+                                                          nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance","nil");
+                                                          if ("true".equals(nillableValue) || "1".equals(nillableValue)){
+                                                              list2.add(String.valueOf(java.lang.Double.NaN));
+                                                                   
+                                                              reader.next();
+                                                          } else {
+                                                        list2.add(reader.getElementText());
+                                                        }
+                                                    }else{
+                                                        loopDone2 = true;
+                                                    }
+                                                }
+                                            }
+                                            // call the converter utility  to convert and set the array
+                                            
+                                            object.setGrades((double[])
+                                                org.apache.axis2.databinding.utils.ConverterUtil.convertToArray(
+                                                            double.class,list2));
+                                                
                               }  // End of if for expected property start element
                                 
                                     else {

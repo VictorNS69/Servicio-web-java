@@ -5,20 +5,6 @@
 <xs:sequence />
 </xs:complexType>
 </xs:element>
-<xs:element name="login">
-<xs:complexType>
-<xs:sequence>
-<xs:element minOccurs="0" name="args0" nillable="true" type="ax22:User" />
-</xs:sequence>
-</xs:complexType>
-</xs:element>
-<xs:element name="loginResponse">
-<xs:complexType>
-<xs:sequence>
-<xs:element minOccurs="0" name="return" nillable="true" type="ax22:Response" />
-</xs:sequence>
-</xs:complexType>
-</xs:element>
 <xs:element name="addUser">
 <xs:complexType>
 <xs:sequence>
@@ -101,6 +87,20 @@
 </xs:sequence>
 </xs:complexType>
 </xs:element>
+<xs:element name="login">
+<xs:complexType>
+<xs:sequence>
+<xs:element minOccurs="0" name="args0" nillable="true" type="ax22:User" />
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+<xs:element name="loginResponse">
+<xs:complexType>
+<xs:sequence>
+<xs:element minOccurs="0" name="return" nillable="true" type="ax22:Response" />
+</xs:sequence>
+</xs:complexType>
+</xs:element>
 </xs:schema><xs:schema xmlns:ns="http://usermanagement.t3.sos.fi.upm.es" attributeFormDefault="qualified" elementFormDefault="qualified" targetNamespace="http://usermanagement.t3.sos.fi.upm.es/xsd">
 <xs:complexType name="User">
 <xs:sequence>
@@ -143,7 +143,8 @@
 </xs:complexType>
 <xs:complexType name="GradesResponse">
 <xs:sequence>
-<xs:element minOccurs="0" name="gradesList" nillable="true" type="xs:anyType" />
+<xs:element maxOccurs="unbounded" minOccurs="0" name="courses" nillable="true" type="xs:string" />
+<xs:element maxOccurs="unbounded" minOccurs="0" name="grades" nillable="true" type="xs:double" />
 <xs:element minOccurs="0" name="result" type="xs:boolean" />
 </xs:sequence>
 </xs:complexType>
