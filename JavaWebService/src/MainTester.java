@@ -141,5 +141,11 @@ public class MainTester {
 		l.setArgs0(u1);
 		lr = UM.login(l);
 		System.out.println("Response: " + lr.get_return().getResponse());
+		
+		// Adding User1
+		System.out.println("Añadiendo a " + u1.getName());
+		au.setArgs0(u1);
+		aur = UM.addUser(au);
+		System.out.println("Response: " + aur.get_return().getResponse());
 	}
 }

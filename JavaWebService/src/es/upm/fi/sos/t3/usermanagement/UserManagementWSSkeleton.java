@@ -192,11 +192,13 @@ public class UserManagementWSSkeleton{
 		System.out.println("\tUsuario a añadir: " + user.getName());
 
 		// Logged admin only
-		if(!this.isLogged || !sessionUser.getName().equals("admin")) {
+		if(!this.isLogged || !this.sessionUser.getName().equals("admin")) {
+			System.out.println("\tUsuario actual ("+ sessionUser.getName()  +") no es admin");
 			return response;	// False
 		}
 		// User exist 
 		if(this.users.containsKey(user.getName())){
+			System.out.println("\tUsuario "+ user.getName() + " existe");
 			return response;	// False
 		}
 		// Add the user
