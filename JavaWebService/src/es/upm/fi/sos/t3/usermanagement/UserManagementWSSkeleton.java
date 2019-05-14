@@ -7,13 +7,17 @@
  */
 package es.upm.fi.sos.t3.usermanagement;
 
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.apache.axis2.AxisFault;
+
+import es.upm.fi.sos.t3.usermanagement.xsd.CourseResponse;
 import es.upm.fi.sos.t3.usermanagement.xsd.Response;
 import es.upm.fi.sos.t3.usermanagement.xsd.User;
-
+import es.upm.fi.sos.t3.usermanagement.UPMCoursesStub.*;
 /**
  *  UserManagementWSSkeleton java skeleton for the axisService
  */
@@ -123,11 +127,29 @@ public class UserManagementWSSkeleton{
 	 * 
 	 * @param showCourses 
 	 * @return showCoursesResponse 
+	 * @throws RemoteException 
 	 */
-	public es.upm.fi.sos.t3.usermanagement.ShowCoursesResponse showCourses
-			(es.upm.fi.sos.t3.usermanagement.ShowCourses showCourses){
-		//TODO : fill this with the necessary business logic
-		throw new  java.lang.UnsupportedOperationException("Please implement " + this.getClass().getName() + "#showCourses");
+	public es.upm.fi.sos.t3.usermanagement.ShowCoursesResponse showCourses(es.upm.fi.sos.t3.usermanagement.ShowCourses showCourses) throws RemoteException{
+		ShowCoursesResponse response = new ShowCoursesResponse();
+		CourseResponse cr = new CourseResponse();
+		cr.setResult(false);
+		response.set_return(cr);
+		System.out.println(sessionUser.getName());
+		if (!this.isLogged || this.sessionUser == null) {
+			System.out.println("no estoy bien logueado");
+			return response;
+		}
+		int cnum = 0;
+		UPMCoursesStub stub = new UPMCoursesStub();
+		UPMCoursesStub.ShowCourses sc = new UPMCoursesStub.ShowCourses();
+		UPMCoursesStub.ShowCoursesResponse scr = new UPMCoursesStub.ShowCoursesResponse();
+		cnum = showCourses.getArgs0().getCourse();
+		System.out.println(cnum + "--------------");
+		sc.setArgs0(cnum);
+		scr = stub.showCourses(sc);
+		cr.setCourseList(scr.get_return());
+		cr.setResult(true);
+		return response;
 	}
 
 

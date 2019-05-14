@@ -6,7 +6,7 @@
  * by the Apache Axis2 version: 1.6.2  Built on : Apr 17, 2012 (05:33:49 IST)
  */
 
-    package sos.t3.upmcourses;
+    package es.upm.fi.sos.t3.usermanagement;
 
     /**
      *  UPMCoursesCallbackHandler Callback class, Users can extend this class and implement
@@ -49,7 +49,7 @@
             * override this method for handling normal response from checkCourse operation
             */
            public void receiveResultcheckCourse(
-                    sos.t3.upmcourses.UPMCoursesStub.CheckCourseResponse result
+                    es.upm.fi.sos.t3.usermanagement.UPMCoursesStub.CheckCourseResponse result
                         ) {
            }
 
@@ -65,7 +65,7 @@
             * override this method for handling normal response from showCourses operation
             */
            public void receiveResultshowCourses(
-                    sos.t3.upmcourses.UPMCoursesStub.ShowCoursesResponse result
+                    es.upm.fi.sos.t3.usermanagement.UPMCoursesStub.ShowCoursesResponse result
                         ) {
            }
 
