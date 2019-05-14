@@ -80,22 +80,29 @@ public class UserManagementWSSkeleton{
 		r.setResponse(false);	// False initialization 
 		response.set_return(r);
 		User user = login.getArgs0();
-		
+		System.out.println("\tUsuario: " + user.getName());
+
 		// If user logins again while he is already logged
 		if (this.sessionUser != null && user.getName().equals(
 				this.sessionUser.getName()) && this.isLogged) {
+			System.out.println("\tYa está logeado");
 			r.setResponse(true);
 			return response; // true
 		}
 		// If user doesn't exist
 		if (this.users.get(user.getName()) == null){
+			System.out.println("\tNo existe el usuario");
 			return response; // false
 		}
 		// If user has entered the password well
+		System.out.println("\tContraseña es: " + user.getPwd());
 		if (!user.getPwd().equals(this.users.get(user.getName()).getPwd())) {
+			System.out.println("\tContraseña erronea");
+			System.out.println("\tDeberia ser: " + this.users.get(user.getName()).getPwd());
 			return response; // false
 		}
 		// Login the user
+		System.out.println("\tisLogged: "+ this.isLogged);
 		if (!this.isLogged) {
 			this.isLogged = true;
 			this.activeUsers.add(user.getName());
@@ -103,6 +110,8 @@ public class UserManagementWSSkeleton{
 			r.setResponse(true);
 			return response; // true
 		}
+		System.out.println("\tUsuario activo: "+ this.sessionUser.getName());
+
 		return response; // false
 	}
 
@@ -129,24 +138,24 @@ public class UserManagementWSSkeleton{
 	 * @return showCoursesResponse 
 	 * @throws RemoteException 
 	 */
-	public es.upm.fi.sos.t3.usermanagement.ShowCoursesResponse showCourses(es.upm.fi.sos.t3.usermanagement.ShowCourses showCourses) throws RemoteException{
+	public es.upm.fi.sos.t3.usermanagement.ShowCoursesResponse showCourses
+			(es.upm.fi.sos.t3.usermanagement.ShowCourses showCourses) throws RemoteException{
 		ShowCoursesResponse response = new ShowCoursesResponse();
 		CourseResponse cr = new CourseResponse();
 		cr.setResult(false);
 		response.set_return(cr);
-		System.out.println(sessionUser.getName());
 		if (!this.isLogged || this.sessionUser == null) {
-			System.out.println("no estoy bien logueado");
+			System.out.println("\tNo está logeado");
 			return response;
 		}
-		int cnum = 0;
-		UPMCoursesStub stub = new UPMCoursesStub();
+		System.out.println("\tUsuario activo: "+ sessionUser.getName());
+		UPMCoursesStub upc = new UPMCoursesStub();
 		UPMCoursesStub.ShowCourses sc = new UPMCoursesStub.ShowCourses();
 		UPMCoursesStub.ShowCoursesResponse scr = new UPMCoursesStub.ShowCoursesResponse();
-		cnum = showCourses.getArgs0().getCourse();
-		System.out.println(cnum + "--------------");
-		sc.setArgs0(cnum);
-		scr = stub.showCourses(sc);
+		sc.setArgs0(showCourses.getArgs0().getCourse());
+		System.out.println("\tCurso elegido: " + sc.getArgs0());
+		scr = upc.showCourses(sc);
+		System.out.println("\tResponse: " + scr.get_return());
 		cr.setCourseList(scr.get_return());
 		cr.setResult(true);
 		return response;
@@ -179,6 +188,9 @@ public class UserManagementWSSkeleton{
 		r.setResponse(false);	// False initialization 
 		response.set_return(r);
 		User user = addUser.getArgs0();
+		System.out.println("\tUsuario activo: "+ this.sessionUser.getName());
+		System.out.println("\tUsuario a añadir: " + user.getName());
+
 		// Logged admin only
 		if(!this.isLogged || !sessionUser.getName().equals("admin")) {
 			return response;	// False
@@ -190,6 +202,7 @@ public class UserManagementWSSkeleton{
 		// Add the user
 		this.users.put(user.getName(), user);
 		r.setResponse(true);
+		System.out.println(this.users.toString());
 		return response;	// True
 	}
 
