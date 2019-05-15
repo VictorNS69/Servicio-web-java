@@ -14,6 +14,7 @@ import java.util.List;
 
 import org.apache.axis2.AxisFault;
 
+import es.upm.fi.sos.t3.usermanagement.xsd.Course;
 import es.upm.fi.sos.t3.usermanagement.xsd.CourseResponse;
 import es.upm.fi.sos.t3.usermanagement.xsd.Response;
 import es.upm.fi.sos.t3.usermanagement.xsd.User;
@@ -24,6 +25,7 @@ import es.upm.fi.sos.t3.usermanagement.UPMCoursesStub.*;
 public class UserManagementWSSkeleton{
 
 	private HashMap<String, User> users;
+	private HashMap<String, HashMap<String, Double>> userGrades;
 	private List<String> activeUsers;
 	private User sessionUser;
 	private Boolean isLogged;
@@ -33,6 +35,8 @@ public class UserManagementWSSkeleton{
 	 */
 	public UserManagementWSSkeleton() {
 		this.users = new HashMap<String, User>();
+		this.userGrades = new HashMap<String, HashMap<String, Double>>();
+		
 		this.activeUsers = new ArrayList<>();
 		if (this.users.isEmpty()){
 			User user = new User();
@@ -168,8 +172,7 @@ public class UserManagementWSSkeleton{
 	 * @param showAllGrades 
 	 * @return showAllGradesResponse 
 	 */
-	public es.upm.fi.sos.t3.usermanagement.ShowAllGradesResponse showAllGrades
-			(es.upm.fi.sos.t3.usermanagement.ShowAllGrades showAllGrades){
+	public es.upm.fi.sos.t3.usermanagement.ShowAllGradesResponse showAllGrades(es.upm.fi.sos.t3.usermanagement.ShowAllGrades showAllGrades){
 		//TODO : fill this with the necessary business logic
 		throw new  java.lang.UnsupportedOperationException("Please implement " + this.getClass().getName() + "#showAllGrades");
 	}
@@ -252,11 +255,47 @@ public class UserManagementWSSkeleton{
 	 * 
 	 * @param addCourseGrade 
 	 * @return addCourseGradeResponse 
+	 * @throws RemoteException 
 	 */
-	public es.upm.fi.sos.t3.usermanagement.AddCourseGradeResponse addCourseGrade
-			(es.upm.fi.sos.t3.usermanagement.AddCourseGrade addCourseGrade){
-		//TODO : fill this with the necessary business logic
-		throw new  java.lang.UnsupportedOperationException("Please implement " + this.getClass().getName() + "#addCourseGrade");
+	public es.upm.fi.sos.t3.usermanagement.AddCourseGradeResponse addCourseGrade(es.upm.fi.sos.t3.usermanagement.AddCourseGrade addCourseGrade) throws RemoteException{
+		AddCourseGradeResponse response = new AddCourseGradeResponse();
+		Response r = new Response();
+		r.setResponse(false);
+		response.set_return(r);
+		
+		if(!this.isLogged) {
+			System.out.println("\tNo está logeado");
+			return response;
+		}
+		if(users.get(sessionUser.getName())==null)
+            return response;
+		
+		System.out.println("\tUsuario activo: "+ sessionUser.getName());
+		UPMCoursesStub upc = new UPMCoursesStub();
+		CheckCourse chk = new CheckCourse();
+		chk.setArgs0(addCourseGrade.getArgs0().getCourse());
+		if(!upc.checkCourse(chk).get_return()) {
+			System.out.println("\tLa asignatura no existe");
+			return response;
+		}
+		String course = addCourseGrade.getArgs0().getCourse(); // Asignatura a cambiar y nota que se le quiere poner
+		Double grade = addCourseGrade.getArgs0().getGrade();
+		HashMap<String, Double> hm = new HashMap<>(); // Creo un HashMap y le asigno las asignaturas del usuario actual
+		hm = userGrades.get(sessionUser.getName());
+		hm.put(course, grade); // INtroduzco la asignatura y su nota
+		userGrades.put(sessionUser.getName(), hm); // Guardo todas las notas del usuario en la lista global
+		r.setResponse(true);
+		return response;
 	}
 
 }
+
+
+
+
+
+
+
+
+
+
