@@ -11,11 +11,13 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.axis2.AxisFault;
 
 import es.upm.fi.sos.t3.usermanagement.xsd.Course;
 import es.upm.fi.sos.t3.usermanagement.xsd.CourseResponse;
+import es.upm.fi.sos.t3.usermanagement.xsd.GradesResponse;
 import es.upm.fi.sos.t3.usermanagement.xsd.Response;
 import es.upm.fi.sos.t3.usermanagement.xsd.User;
 import es.upm.fi.sos.t3.usermanagement.UPMCoursesStub.*;
@@ -173,8 +175,41 @@ public class UserManagementWSSkeleton{
 	 * @return showAllGradesResponse 
 	 */
 	public es.upm.fi.sos.t3.usermanagement.ShowAllGradesResponse showAllGrades(es.upm.fi.sos.t3.usermanagement.ShowAllGrades showAllGrades){
-		//TODO : fill this with the necessary business logic
-		throw new  java.lang.UnsupportedOperationException("Please implement " + this.getClass().getName() + "#showAllGrades");
+		ShowAllGradesResponse response = new ShowAllGradesResponse();
+		GradesResponse r = new GradesResponse();
+		r.setResult(false);
+		response.set_return(r);
+		if(!this.isLogged)
+			return response;
+		HashMap<String, Double> grades = userGrades.get(sessionUser.getName());
+		Set<String> courses = grades.keySet();
+		ArrayList<String> coursesList = new ArrayList<>(); 
+		ArrayList<Double> gradesList = new ArrayList<>();
+		
+		for (String k : courses) {
+			Double act = grades.get(k);
+			if (gradesList.isEmpty()) { // Si array vacio inserto al principio
+				gradesList.add(act);
+			} else {
+				boolean found = false;
+				for(int i=0;i<gradesList.size() && !found;i++) {
+					if (act > gradesList.get(i)) {
+						gradesList.add(i, act);
+						coursesList.add(i, k);
+						found = true;
+					}
+				}
+			}		
+		}
+		String[] coursesArray = (String[]) coursesList.toArray();
+		double[] gradesArray = new double[courses.size()];
+		for (int i=0;i<gradesList.size();i++) {
+			gradesArray[i] = gradesList.get(i);
+		}
+		r.setCourses(coursesArray);
+		r.setGrades(gradesArray);
+		r.setResult(true);
+		return response;
 	}
 
 
