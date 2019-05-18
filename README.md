@@ -21,22 +21,39 @@ El WSDL del servicio **_UPMCourses_** dispone de las siguinetes operaciones:
 ## Enunciado
 Para ver el enunciado de la práctica pincha [aquí](/doc/PracticaSW2019.pdf).
 
-## Uso de comandos 
-\#TODO
 ## Requisitos
-\#TODO
+- Tomcat 7
+- axis2 1.6
 
-## Importar proyecto
-\#TODO
-## Activar el servidor localhost de Tomcat desde Eclipse (o terminal)
-\#TODO
-## Memoria del proyecto
-\#TODO
+## Añadir el proyecto en Tomcat y/o axis2
+- Primero debes generar el fichero aar
+```sh
+cd JavaWebService
+ant
+```
+El fichero `UserManagementWS.aar` se habrá generado en `build/lib`, lo único que hay que hacer es copiarlo al directorio siguiente de tomcat `/webapps/axis2/WEB-INF/services`.
+
+**Nota**: No es estrictamente necesario tener Tomcat. Si solo tienes axis2, puedes copiar el fichero `UserManagementWS.aar` en el directorio de axis2 `repository/services`, y acto seguido iniciar el servidor de axis2
+```sh
+./bin/axis2server.sh
+```
+Pasados unos segundos, ya podrás usar el servidor.
+
+## Activar el servidor via terminal
+- Ir al directorio donde tengas instalado Tomcat
+- Activar el servidor
+```sh
+./bin/startup.sh
+```
+Hecho esto, al cabo de unos segundos, ya podrás usar el servidor.
+
+## Ejecutar cliente
+\#TODO Exportar a jar el cliente y ejecutar
 
 ## Autores
 [Víctor Nieves Sánchez](https://twitter.com/VictorNS69)
 
-Daniel Morgera Pérez
+[Daniel Morgera Pérez](https://github.com/dmorgera)
 
 ## Licencia
 [Licencia](/LICENSE).
