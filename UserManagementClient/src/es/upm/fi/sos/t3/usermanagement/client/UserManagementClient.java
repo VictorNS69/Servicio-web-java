@@ -5,7 +5,10 @@ import java.rmi.RemoteException;
 import es.upm.fi.sos.t3.usermanagement.client.UserManagementWSStub.*;
 
 public class UserManagementClient {
-	
+		
+	/** Prints the courses list
+	 * @param arr: array of Strings with the courses
+	 */
 	private static void printCourses(String [] arr) {
 		if (arr != null) {
 			System.out.print("\tLista: ");
@@ -18,53 +21,334 @@ public class UserManagementClient {
 		}
 	}
 	
+	private static boolean compareCourses(String [] c1, String [] c2) {
+		if (c1 == null && c2 == null) 
+			return true;
+			
+		if (c1 == null || c2 == null) 
+			return false;
+		
+		
+		if (c1.length != c2.length)
+			return false;
+		
+		for (int i = 0; i < c1.length ; i++) {
+			if (!c1[i].equals(c2[i])) 
+				return false;
+		}
+		return true;
+	}
+	
 	public static void main(String[] args) throws RemoteException {
+		// All the objects and stuff we need
 		UserManagementWSStub st = new UserManagementWSStub();
 		st._getServiceClient().engageModule("addressing");
 		st._getServiceClient().getOptions().setManageSession(true);
-		//st._getServiceClient().getOptions().setUseSeparateListener(true);
 		
+		int test = 1;
+		Login login = new Login();
+		LoginResponse lr = new LoginResponse();
+		Logout logout = new Logout();
+		AddUser au = new AddUser();
+		AddUserResponse aur = new AddUserResponse();
+		ShowCoursesResponse scr = new ShowCoursesResponse();
+		ShowCourses sc = new ShowCourses();
+		Course c = new Course();
+		String response;
+		ChangePassword cp = new ChangePassword();
+		ChangePasswordResponse cpr = new ChangePasswordResponse();
+		PasswordPair pw = new PasswordPair();
+		RemoveUser ru = new RemoveUser();
+		RemoveUserResponse rur = new RemoveUserResponse();
+		Username un = new Username();
+				
+		// User admin
 		User admin = new User();
 		admin.setName("admin");
 		admin.setPwd("admin");
-		Login log = new Login();
-		log.setArgs0(admin);
 		
-		LoginResponse lr = new LoginResponse();
-		lr = st.login(log);
-		System.out.println("El valor de login de admin es " + lr.get_return().getResponse());
-	
+		// User fake admin
+		User adminFake = new User();
+		adminFake.setName("admin");
+		adminFake.setPwd("notValidOne");
+		
+		
+		System.out.println("Test "+ test++ + ": Invalid login (fake admin)");	
+		login.setArgs0(adminFake);
+		lr = st.login(login);
+		response = lr.get_return().getResponse() == false ? "OK":"Failure"; 
+		System.out.println("\tResponse: "+ lr.get_return().getResponse());
+		System.out.println("\tExpected: false");
+		System.out.println("\tTest: ---> " + response);
+		
 		// User 1
-		User u1 = new User();
-		u1.setName("usuario1");
-		u1.setPwd("u1");
-	
-		// Adding User1
-		System.out.println("Añadiendo a " + u1.getName());
-		AddUser au = new AddUser();
-		au.setArgs0(u1);
-		AddUserResponse aur = new AddUserResponse();
-		aur = st.addUser(au);
-		System.out.println("Response: " + aur.get_return().getResponse());
-		/*
-		ShowCourses sc = new ShowCourses();
-		Course c = new Course();
-		c.setCourse(1);
-		sc.setArgs0(c);
-		ShowCoursesResponse scr = new ShowCoursesResponse();
-		scr = st.showCourses(sc);
-		*/
-		ShowCoursesResponse scr = new ShowCoursesResponse();
-		ShowCourses sc = new ShowCourses();
-		Course c = new Course();
-		c.setCourse(1);
-		System.out.println("ShowCourses de " + c.getCourse());
-		sc.setArgs0(c);
+		User user1 = new User();
+		user1.setName("user1");
+		user1.setPwd("user1");
 		
+		System.out.println("Test "+ test++ + ": Invalid login (unexisting user in the system)");	
+		login.setArgs0(user1);
+		lr = st.login(login);
+		response = lr.get_return().getResponse() == false ? "OK":"Failure"; 
+		System.out.println("\tResponse: "+ lr.get_return().getResponse());
+		System.out.println("\tExpected: false");
+		System.out.println("\tTest: ---> " + response);
+		
+		System.out.println("Test "+ test++ + ": Valid login (admin)");	
+		login.setArgs0(admin);
+		lr = st.login(login);
+		response = lr.get_return().getResponse() == true ? "OK":"Failure"; 
+		System.out.println("\tResponse: "+ lr.get_return().getResponse());
+		System.out.println("\tExpected: true");
+		System.out.println("\tTest: ---> " + response);
+		
+		// List of the courses
+		final String [] EMPTYCOURSE = null;
+		c.setCourse(1);
+		sc.setArgs0(c);
 		scr = st.showCourses(sc);
-		System.out.println(scr.get_return().getCourseList());
-		printCourses(scr.get_return().getCourseList());
-		System.out.println(scr.get_return().getResult());
+		final String [] FIRSTCOURSE = scr.get_return().getCourseList();
+		c.setCourse(2);
+		sc.setArgs0(c);
+		scr = st.showCourses(sc);
+		final String [] SECONDCOURSE = scr.get_return().getCourseList();
+		c.setCourse(3);
+		sc.setArgs0(c);
+		scr = st.showCourses(sc);
+		final String [] THIRDCOURSE = scr.get_return().getCourseList();
+		c.setCourse(4);
+		sc.setArgs0(c);
+		scr = st.showCourses(sc);
+		final String [] FORTHCOURSE = scr.get_return().getCourseList();
+			
+		System.out.println("Test "+ test++ + ": Add user (admin logged)");	
+		au.setArgs0(user1);
+		aur = st.addUser(au);
+		response = aur.get_return().getResponse() == true ? "OK":"Failure"; 
+		System.out.println("\tResponse: "+ aur.get_return().getResponse());
+		System.out.println("\tExpected: true");
+		System.out.println("\tTest: ---> " + response);
+		
+		System.out.println("Test "+ test++ + ": Add existing user (admin logged)");	
+		au.setArgs0(user1);
+		aur = st.addUser(au);
+		response = aur.get_return().getResponse() == false ? "OK":"Failure"; 
+		System.out.println("\tResponse: "+ aur.get_return().getResponse());
+		System.out.println("\tExpected: false");
+		System.out.println("\tTest: ---> " + response);
+		
+		System.out.println("Test "+ test++ + ": Logout (admin)");	
+		st.logout(logout);
+		System.out.println("\tResponse: Void");
+		System.out.println("\tExpected: Void");
+		System.out.println("\tTest: ---> OK");
+		
+		System.out.println("Test "+ test++ + ": Logout (admin again)");	
+		st.logout(logout);
+		System.out.println("\tResponse: Void");
+		System.out.println("\tExpected: Void");
+		System.out.println("\tTest: ---> OK");
+		
+		System.out.println("Test "+ test++ + ": Logout (user1 not logged)");	
+		st.logout(logout);
+		System.out.println("\tResponse: Void");
+		System.out.println("\tExpected: Void");
+		System.out.println("\tTest: ---> OK");
+		
+		System.out.println("Test "+ test++ + ": Invalid login (user1 wrong password)");	
+		user1.setPwd("err");
+		login.setArgs0(user1);
+		lr = st.login(login);
+		response = lr.get_return().getResponse() == false ? "OK":"Failure"; 
+		System.out.println("\tResponse: "+ lr.get_return().getResponse());
+		System.out.println("\tExpected: false");
+		System.out.println("\tTest: ---> " + response);
+
+		// reset user1 password
+		user1.setPwd("user1");
+		
+		System.out.println("Test "+ test++ + ": Valid login (user1)");	
+		login.setArgs0(user1);
+		lr = st.login(login);
+		response = lr.get_return().getResponse() == true ? "OK":"Failure"; 
+		System.out.println("\tResponse: "+ lr.get_return().getResponse());
+		System.out.println("\tExpected: true");
+		System.out.println("\tTest: ---> " + response);
+				
+		// User 2
+		User user2 = new User();
+		user2.setName("user2");
+		user2.setPwd("user2");
+		
+		System.out.println("Test "+ test++ + ": Add user2 (user1 logged)");	
+		au.setArgs0(user2);
+		aur = st.addUser(au);
+		response = aur.get_return().getResponse() == false ? "OK":"Failure"; 
+		System.out.println("\tResponse: "+ aur.get_return().getResponse());
+		System.out.println("\tExpected: false");
+		System.out.println("\tTest: ---> " + response);
+		
+		System.out.println("Test "+ test++ + ": Change user1 password (user1 logged)");
+		pw.setOldpwd("user1");
+		pw.setNewpwd("new");
+		cp.setArgs0(pw);
+		cpr = st.changePassword(cp);
+		response = cpr.get_return().getResponse() == true ? "OK":"Failure"; 
+		System.out.println("\tResponse: "+ cpr.get_return().getResponse());
+		System.out.println("\tExpected: true");
+		System.out.println("\tTest: ---> " + response);
+
+		System.out.println("Test "+ test++ + ": Change user1 password (user1 logged but wrong old password)");
+		pw.setOldpwd("user1");
+		pw.setNewpwd("new");
+		cp.setArgs0(pw);
+		cpr = st.changePassword(cp);
+		response = cpr.get_return().getResponse() == false ? "OK":"Failure"; 
+		System.out.println("\tResponse: "+ cpr.get_return().getResponse());
+		System.out.println("\tExpected: false");
+		System.out.println("\tTest: ---> " + response);
+		
+		System.out.println("Test "+ test++ + ": Change user1 password (user1 logged and oldPassword = newPassword)");
+		pw.setOldpwd("new");
+		pw.setNewpwd("new");
+		cp.setArgs0(pw);
+		cpr = st.changePassword(cp);
+		response = cpr.get_return().getResponse() == true ? "OK":"Failure"; 
+		System.out.println("\tResponse: "+ cpr.get_return().getResponse());
+		System.out.println("\tExpected: true");
+		System.out.println("\tTest: ---> " + response);
+		
+		System.out.println("Test "+ test++ + ": Remove user1 (user1 logged)");
+		un.setUsername(user1.getName());
+		ru.setArgs0(un);
+		rur = st.removeUser(ru);
+		response = rur.get_return().getResponse() == false ? "OK":"Failure"; 
+		System.out.println("\tResponse: "+ rur.get_return().getResponse());
+		System.out.println("\tExpected: false");
+		System.out.println("\tTest: ---> " + response);
+		
+		System.out.println("Test "+ test++ + ":: Remove user2 (user1 logged)");
+		un.setUsername(user2.getName());
+		ru.setArgs0(un);
+		rur = st.removeUser(ru);
+		response = rur.get_return().getResponse() == false ? "OK":"Failure"; 
+		System.out.println("\tResponse: "+ rur.get_return().getResponse());
+		System.out.println("\tExpected: false");
+		System.out.println("\tTest: ---> " + response);
+		
+		// logout user1
+		st.logout(logout);
+		
+		// login admin
+		login.setArgs0(admin);
+		lr = st.login(login);
+		
+		System.out.println("Test "+ test++ + ": Remove admin (admin logged)");
+		un.setUsername(admin.getName());
+		ru.setArgs0(un);
+		rur = st.removeUser(ru);
+		response = rur.get_return().getResponse() == false ? "OK":"Failure"; 
+		System.out.println("\tResponse: "+ rur.get_return().getResponse());
+		System.out.println("\tExpected: false");
+		System.out.println("\tTest: ---> " + response);
+		
+		System.out.println("Test "+ test++ + ": Remove user1 (admin logged)");
+		un.setUsername(user1.getName());
+		ru.setArgs0(un);
+		rur = st.removeUser(ru);
+		response = rur.get_return().getResponse() == true ? "OK":"Failure"; 
+		System.out.println("\tResponse: "+ rur.get_return().getResponse());
+		System.out.println("\tExpected: true");
+		System.out.println("\tTest: ---> " + response);
+		
+		// Added User2
+		au.setArgs0(user1);
+		aur = st.addUser(au);
+		
+		// logout admin
+		st.logout(logout);
+		
+		System.out.println("Test "+ test++ + ": Remove user2 (nobody logged)");
+		un.setUsername(user1.getName());
+		ru.setArgs0(un);
+		rur = st.removeUser(ru);
+		response = rur.get_return().getResponse() == false ? "OK":"Failure"; 
+		System.out.println("\tResponse: "+ rur.get_return().getResponse());
+		System.out.println("\tExpected: false");
+		System.out.println("\tTest: ---> " + response);
+		
+		System.out.println("Test "+ test++ + ": Show Courses 1 (nobody logged)");
+		c.setCourse(1);
+		sc.setArgs0(c);
+		scr = st.showCourses(sc);
+		response = scr.get_return().getResult()== false ? "OK":"Failure"; 
+		System.out.println("\tResponse: "+ scr.get_return().getResult());
+		System.out.println("\tExpected: false");
+		System.out.println("\tSame response list: "+ compareCourses(EMPTYCOURSE, scr.get_return().getCourseList()));
+		System.out.println("\tTest: ---> " + response);
+		
+		// login admin
+		login.setArgs0(admin);
+		lr = st.login(login);
+		
+		System.out.println("Test "+ test++ + ": Show Courses 1 (admin logged)");
+		c.setCourse(1);
+		sc.setArgs0(c);
+		scr = st.showCourses(sc);
+		response = scr.get_return().getResult()== true ? "OK":"Failure"; 
+		System.out.println("\tResponse: "+ scr.get_return().getResult());
+		System.out.println("\tExpected: true");
+		System.out.println("\tSame response list: "+ compareCourses(FIRSTCOURSE, scr.get_return().getCourseList()));
+		System.out.println("\tTest: ---> " + response);
+		
+		System.out.println("Test "+ test++ + ": Show Courses 2 (admin logged)");
+		c.setCourse(2);
+		sc.setArgs0(c);
+		scr = st.showCourses(sc);
+		response = scr.get_return().getResult()== true ? "OK":"Failure"; 
+		System.out.println("\tResponse: "+ scr.get_return().getResult());
+		System.out.println("\tExpected: true");
+		System.out.println("\tSame response list: "+ compareCourses(SECONDCOURSE, scr.get_return().getCourseList()));
+		System.out.println("\tTest: ---> " + response);
+
+		// Added user1
+		au.setArgs0(user1);
+		aur = st.addUser(au);
+		
+		// logout admin
+		st.logout(logout);
+		
+		// login user1
+		login.setArgs0(user1);
+		st.login(login);
+		
+		System.out.println("Test "+ test++ + ": Show Courses 3 (user1 logged)");
+		c.setCourse(3);
+		sc.setArgs0(c);
+		scr = st.showCourses(sc);
+		response = scr.get_return().getResult()== true ? "OK":"Failure"; 
+		System.out.println("\tResponse: "+ scr.get_return().getResult());
+		System.out.println("\tExpected: true");
+		System.out.println("\tSame response list: "+ compareCourses(THIRDCOURSE, scr.get_return().getCourseList()));
+		System.out.println("\tTest: ---> " + response);
+		
+		System.out.println("Test "+ test++ + ": Show Courses 4 (user1 logged)");
+		c.setCourse(4);
+		sc.setArgs0(c);
+		scr = st.showCourses(sc);
+		response = scr.get_return().getResult()== true ? "OK":"Failure"; 
+		System.out.println("\tResponse: "+ scr.get_return().getResult());
+		System.out.println("\tExpected: true");
+		System.out.println("\tSame response list: "+ compareCourses(FORTHCOURSE, scr.get_return().getCourseList()));
+		System.out.println("\tTest: ---> " + response);
+		
+		/* TODO: Add test for showAllGrades and addCourseGrade
+		 * 
+		 * actually user1 is logged, and there are only 2 users in the system [admin, user1]
+		 * PLEASE: follow the the same trace than before.
+		 * 
+		 * IF tested both functions, close #9 and #8
+		 */
 		
 	}
 
