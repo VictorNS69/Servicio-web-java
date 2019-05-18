@@ -63,6 +63,10 @@ public class UserManagementWSSkeleton{
 	        r.setResponse(false);
 	        response.set_return(r);
 	        if (this.isLogged || this.sessionUser != null) {
+	        	System.out.println("\tActive user: " + this.sessionUser.getName());
+	        	System.out.println("\tActive user pw: " + this.sessionUser.getPwd());
+	        	System.out.println("\tOldPw: " + changePassword.localArgs0.getOldpwd());
+	        	System.out.println("\tNewPw: " + changePassword.localArgs0.getNewpwd());
 	            if(this.sessionUser.getPwd().equals(changePassword.localArgs0.getOldpwd())){
 	                this.sessionUser.setPwd(changePassword.localArgs0.getNewpwd());
 	                r.setResponse(true);
@@ -151,7 +155,7 @@ public class UserManagementWSSkeleton{
 		cr.setResult(false);
 		response.set_return(cr);
 		if (!this.isLogged || this.sessionUser == null) {
-			System.out.println("\tNo está logeado");
+			//System.out.println("\tNo está logeado");
 			return response;
 		}
 		System.out.println("\tUsuario activo: "+ sessionUser.getName());
@@ -174,7 +178,8 @@ public class UserManagementWSSkeleton{
 	 * @param showAllGrades 
 	 * @return showAllGradesResponse 
 	 */
-	public es.upm.fi.sos.t3.usermanagement.ShowAllGradesResponse showAllGrades(es.upm.fi.sos.t3.usermanagement.ShowAllGrades showAllGrades){
+	public es.upm.fi.sos.t3.usermanagement.ShowAllGradesResponse showAllGrades
+			(es.upm.fi.sos.t3.usermanagement.ShowAllGrades showAllGrades){
 		ShowAllGradesResponse response = new ShowAllGradesResponse();
 		GradesResponse r = new GradesResponse();
 		r.setResult(false);
@@ -226,14 +231,15 @@ public class UserManagementWSSkeleton{
 		r.setResponse(false);	// False initialization 
 		response.set_return(r);
 		User user = addUser.getArgs0();
-		System.out.println("\tUsuario activo: "+ this.sessionUser.getName());
-		System.out.println("\tUsuario a añadir: " + user.getName());
+		
 
 		// Logged admin only
 		if(!this.isLogged || !this.sessionUser.getName().equals("admin")) {
-			System.out.println("\tUsuario actual ("+ sessionUser.getName()  +") no es admin");
+			//System.out.println("\tUsuario actual ("+ sessionUser.getName()  +") no es admin");
 			return response;	// False
 		}
+		//System.out.println("\tUsuario activo: "+ this.sessionUser.getName());
+		//System.out.println("\tUsuario a añadir: " + user.getName());
 		// User exist 
 		if(this.users.containsKey(user.getName())){
 			System.out.println("\tUsuario "+ user.getName() + " existe");
@@ -242,7 +248,7 @@ public class UserManagementWSSkeleton{
 		// Add the user
 		this.users.put(user.getName(), user);
 		r.setResponse(true);
-		System.out.println(this.users.toString());
+		//System.out.println(this.users.toString());
 		return response;	// True
 	}
 
@@ -260,14 +266,17 @@ public class UserManagementWSSkeleton{
         r.setResponse(false);
         response.set_return(r);
 
-        if(!this.isLogged)
+        if(!this.isLogged || this.users.get(this.sessionUser.getName()) == null)
             return response;
-        if(users.get(sessionUser.getName())==null)
-            return response;
+        
+        // Nobody can remove the admin
+        if (removeUser.getArgs0().getUsername().equals("admin"))
+        	return response;
+        
         if(this.sessionUser.getName().equals("admin")) {
-            users.remove(removeUser.getArgs0().getUsername());
+        	System.out.println("\t Admin");
+            this.users.remove(removeUser.getArgs0().getUsername());
             r.setResponse(true);
-            response.set_return(r);
             return response;
         } 
         else {
@@ -279,7 +288,6 @@ public class UserManagementWSSkeleton{
             
             this.users.remove(removeUser.getArgs0().getUsername());
             r.setResponse(true);
-            response.set_return(r);
             return response;
         }
 	}
@@ -292,7 +300,8 @@ public class UserManagementWSSkeleton{
 	 * @return addCourseGradeResponse 
 	 * @throws RemoteException 
 	 */
-	public es.upm.fi.sos.t3.usermanagement.AddCourseGradeResponse addCourseGrade(es.upm.fi.sos.t3.usermanagement.AddCourseGrade addCourseGrade) throws RemoteException{
+	public es.upm.fi.sos.t3.usermanagement.AddCourseGradeResponse addCourseGrade
+			(es.upm.fi.sos.t3.usermanagement.AddCourseGrade addCourseGrade) throws RemoteException{
 		AddCourseGradeResponse response = new AddCourseGradeResponse();
 		Response r = new Response();
 		r.setResponse(false);
