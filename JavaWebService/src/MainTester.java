@@ -2,7 +2,9 @@ import java.rmi.RemoteException;
 
 import es.upm.fi.sos.t3.usermanagement.*;
 import es.upm.fi.sos.t3.usermanagement.xsd.Course;
+import es.upm.fi.sos.t3.usermanagement.xsd.PasswordPair;
 import es.upm.fi.sos.t3.usermanagement.xsd.User;
+import es.upm.fi.sos.t3.usermanagement.xsd.Username;
 
 public class MainTester {
 
@@ -147,5 +149,49 @@ public class MainTester {
 		au.setArgs0(u1);
 		aur = UM.addUser(au);
 		System.out.println("Response: " + aur.get_return().getResponse());
+		
+		PasswordPair pw = new PasswordPair();
+		ChangePassword cp = new ChangePassword();
+		ChangePasswordResponse cpr = new ChangePasswordResponse();
+		pw.setOldpwd("admin");
+		pw.setNewpwd("new");
+		cp.setArgs0(pw);
+		cpr = UM.changePassword(cp);
+		System.out.println("Response: " + cpr.get_return().getResponse());
+
+		
+		Username un = new Username();
+		RemoveUser ru = new RemoveUser();
+		RemoveUserResponse rur = new RemoveUserResponse();
+		un.setUsername(admin.getName());
+		ru.setArgs0(un);
+		rur = UM.removeUser(ru);
+		System.out.println("Response: " + rur.get_return().getResponse());
+		// logout admin
+		UM.logout(lo);
+		
+		un.setUsername(u1.getName());
+		ru.setArgs0(un);
+		rur = UM.removeUser(ru);
+		System.out.println("\tResponse: "+ rur.get_return().getResponse());
+		
+		c.setCourse(0);
+		sc.setArgs0(c);
+		scr = UM.showCourses(sc);
+		final String [] EMPTYCOURSE = scr.get_return().getCourseList();
+		System.out.println("\tResponse: "+ rur.get_return().getResponse());
+		printCourses(EMPTYCOURSE);
+		}
+	
+	private static void printCourses(String [] arr) {
+		if (arr != null) {
+			System.out.print("\tLista: ");
+			for(String i: arr) {
+				System.out.print(i.toString() + " ");
+			}
+		}
+		else {
+			System.out.println("\tLista vacía");
+		}
 	}
 }
