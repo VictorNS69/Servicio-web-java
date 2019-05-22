@@ -4,21 +4,12 @@ import java.rmi.RemoteException;
 import es.upm.fi.sos.t3.usermanagement.client.UserManagementWSStub.*;
 
 public class UserManagementClient {
-		
-	/** Prints the courses list
-	 * @param arr: array of Strings with the courses
+	
+	/** Compares 2 arrays of Double's
+	 * @param c1: array1
+	 * @param c2: array2
+	 * @return boolean
 	 */
-	private static void printCourses(String [] arr) {
-		if (arr != null) {
-			System.out.print("\tLista: ");
-			for(String i: arr) {
-				System.out.print(i.toString() + " ");
-			}
-		}
-		else {
-			System.out.println("\tLista vacía");
-		}
-	}
 	private static boolean compareDoubleArrays(double [] c1, double [] c2) {
 		if (c1 == null && c2 == null) 
 			return true;
@@ -36,6 +27,12 @@ public class UserManagementClient {
 		}
 		return true;
 	}
+	
+	/** Compares 2 arrays of String's
+	 * @param c1: array1
+	 * @param c2: array2
+	 * @return boolean
+	 */
 	private static boolean compareCourses(String [] c1, String [] c2) {
 		if (c1 == null && c2 == null) 
 			return true;
@@ -53,7 +50,10 @@ public class UserManagementClient {
 		}
 		return true;
 	}
-	
+	/** Main client
+	 * @param args
+	 * @throws RemoteException
+	 */
 	public static void main(String[] args) throws RemoteException {
 		// All the objects and stuff we need
 		UserManagementWSStub st = new UserManagementWSStub();
@@ -362,14 +362,6 @@ public class UserManagementClient {
 		System.out.println("\tSame response list: "+ compareCourses(FORTHCOURSE, scr.get_return().getCourseList()));
 		System.out.println("\tTest: ---> " + response);
 		
-		/* TODO: Add test for showAllGrades and addCourseGrade
-		 * 
-		 * actually user1 is logged, and there are only 2 users in the system [admin, user1]
-		 * PLEASE: follow the the same trace than before.
-		 * 
-		 * IF tested both functions, close #9 and #8
-		 */
-		
 		System.out.println("Test "+ test++ + ": Add Course Grade 1 (user1 logged)");
 		cg.setCourse("LOGICA");
 		cg.setGrade(4);
@@ -420,7 +412,6 @@ public class UserManagementClient {
 		System.out.println("\tSame response list (Courses): "+ compareCourses(expectedCourses, sar.get_return().getCourses()));
 		System.out.println("\tSame response list (Grades): "+ compareDoubleArrays(expectedGrades, sar.get_return().getGrades()));
 		System.out.println("\tTest: ---> " + response);
-		
 	}
 
 }
