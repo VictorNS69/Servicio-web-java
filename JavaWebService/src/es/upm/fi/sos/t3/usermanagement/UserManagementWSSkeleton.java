@@ -59,10 +59,6 @@ public class UserManagementWSSkeleton{
 	        r.setResponse(false);
 	        response.set_return(r);
 	        if (this.isLogged || this.sessionUser != null) {
-	        	System.out.println("\tActive user: " + this.sessionUser.getName());
-	        	System.out.println("\tActive user pw: " + this.sessionUser.getPwd());
-	        	System.out.println("\tOldPw: " + changePassword.localArgs0.getOldpwd());
-	        	System.out.println("\tNewPw: " + changePassword.localArgs0.getNewpwd());
 	            if(this.sessionUser.getPwd().equals(changePassword.localArgs0.getOldpwd())){
 	                this.sessionUser.setPwd(changePassword.localArgs0.getNewpwd());
 	                r.setResponse(true);
@@ -71,7 +67,6 @@ public class UserManagementWSSkeleton{
 	        }
 	        return response;
 	}
-
 
 	/**
 	 * Starts a new session for the user
@@ -86,29 +81,21 @@ public class UserManagementWSSkeleton{
 		r.setResponse(false);	// False initialization 
 		response.set_return(r);
 		User user = login.getArgs0();
-		System.out.println("\tUsuario: " + user.getName());
-
 		// If user logins again while he is already logged
 		if (this.sessionUser != null && user.getName().equals(
 				this.sessionUser.getName()) && this.isLogged) {
-			System.out.println("\tYa está logeado");
 			r.setResponse(true);
 			return response; // true
 		}
 		// If user doesn't exist
 		if (this.users.get(user.getName()) == null){
-			System.out.println("\tNo existe el usuario");
 			return response; // false
 		}
 		// If user has entered the password well
-		System.out.println("\tContraseña es: " + user.getPwd());
 		if (!user.getPwd().equals(this.users.get(user.getName()).getPwd())) {
-			System.out.println("\tContraseña erronea");
-			System.out.println("\tDeberia ser: " + this.users.get(user.getName()).getPwd());
 			return response; // false
 		}
 		// Login the user
-		System.out.println("\tisLogged: "+ this.isLogged);
 		if (!this.isLogged) {
 			this.isLogged = true;
 			this.activeUsers.add(user.getName());
@@ -116,11 +103,8 @@ public class UserManagementWSSkeleton{
 			r.setResponse(true);
 			return response; // true
 		}
-		System.out.println("\tUsuario activo: "+ this.sessionUser.getName());
-
 		return response; // false
 	}
-
 
 	/**
 	 * Closes a session 
@@ -136,9 +120,8 @@ public class UserManagementWSSkeleton{
 		}
 	}
 
-
 	/**
-	 * Auto generated method signature
+	 * Show the subjects of a Course
 	 * 
 	 * @param showCourses 
 	 * @return showCoursesResponse 
@@ -151,25 +134,20 @@ public class UserManagementWSSkeleton{
 		cr.setResult(false);
 		response.set_return(cr);
 		if (!this.isLogged || this.sessionUser == null) {
-			//System.out.println("\tNo está logeado");
 			return response;
 		}
-		System.out.println("\tUsuario activo: "+ sessionUser.getName());
 		UPMCoursesStub upc = new UPMCoursesStub();
 		UPMCoursesStub.ShowCourses sc = new UPMCoursesStub.ShowCourses();
 		UPMCoursesStub.ShowCoursesResponse scr = new UPMCoursesStub.ShowCoursesResponse();
 		sc.setArgs0(showCourses.getArgs0().getCourse());
-		System.out.println("\tCurso elegido: " + sc.getArgs0());
 		scr = upc.showCourses(sc);
-		System.out.println("\tResponse: " + scr.get_return());
 		cr.setCourseList(scr.get_return());
 		cr.setResult(true);
 		return response;
 	}
 
-
 	/**
-	 * Auto generated method signature
+	 * Shows user's all grades
 	 * 
 	 * @param showAllGrades 
 	 * @return showAllGradesResponse 
@@ -183,9 +161,7 @@ public class UserManagementWSSkeleton{
 		if(!this.isLogged)
 			return response;
 		HashMap<String, Double> grades = userGrades.get(sessionUser.getName());
-		System.out.println(grades);
 		Set<String> courses = grades.keySet();
-		System.out.println(courses);
 		ArrayList<String> coursesList = new ArrayList<>(); 
 		ArrayList<Double> gradesList = new ArrayList<>();
 		
@@ -195,15 +171,12 @@ public class UserManagementWSSkeleton{
 				gradesList.add(act);
 				coursesList.add(k);
 			} else {
-				System.out.println("Entro aqui "+ k + " " + gradesList.size());
 				boolean found = false;
 				int size = gradesList.size();
 				for(int i=0;i<size && !found;i++) {
 					if (act > gradesList.get(i)) {
 						gradesList.add(i, act);
-						System.out.println(k);
 						coursesList.add(i, k);
-						System.out.println(act);
 						found = true;
 					} else if(i==gradesList.size()-1){
 						gradesList.add(act);
@@ -212,7 +185,6 @@ public class UserManagementWSSkeleton{
 				}
 			}		
 		}
-		
 		String[] coursesArray = new String[courses.size()];
 		double[] gradesArray = new double[courses.size()];
 		for (int i=0;i<gradesList.size();i++) {
@@ -224,7 +196,6 @@ public class UserManagementWSSkeleton{
 		r.setResult(true);
 		return response;
 	}
-
 
 	/**
 	 * Adds a new user
@@ -239,30 +210,23 @@ public class UserManagementWSSkeleton{
 		r.setResponse(false);	// False initialization 
 		response.set_return(r);
 		User user = addUser.getArgs0();
-		
-
 		// Logged admin only
 		if(!this.isLogged || !this.sessionUser.getName().equals("admin")) {
-			//System.out.println("\tUsuario actual ("+ sessionUser.getName()  +") no es admin");
 			return response;	// False
 		}
-		//System.out.println("\tUsuario activo: "+ this.sessionUser.getName());
-		//System.out.println("\tUsuario a añadir: " + user.getName());
 		// User exist 
 		if(this.users.containsKey(user.getName())){
-			System.out.println("\tUsuario "+ user.getName() + " existe");
 			return response;	// False
 		}
 		// Add the user
 		this.users.put(user.getName(), user);
 		r.setResponse(true);
-		//System.out.println(this.users.toString());
 		return response;	// True
 	}
 
 
 	/**
-	 * Auto generated method signature
+	 * Removes a user
 	 * 
 	 * @param removeUser 
 	 * @return removeUserResponse 
@@ -282,7 +246,6 @@ public class UserManagementWSSkeleton{
         	return response;
         
         if(this.sessionUser.getName().equals("admin")) {
-        	System.out.println("\t Admin");
             this.users.remove(removeUser.getArgs0().getUsername());
             r.setResponse(true);
             return response;
@@ -300,9 +263,8 @@ public class UserManagementWSSkeleton{
         }
 	}
 
-
 	/**
-	 * Auto generated method signature
+	 * Adds a grade to a subject
 	 * 
 	 * @param addCourseGrade 
 	 * @return addCourseGradeResponse 
@@ -316,18 +278,15 @@ public class UserManagementWSSkeleton{
 		response.set_return(r);
 		
 		if(!this.isLogged) {
-			System.out.println("\tNo está logeado");
 			return response;
 		}
 		if(users.get(sessionUser.getName())==null)
             return response;
 		
-		System.out.println("\tUsuario activo: "+ sessionUser.getName());
 		UPMCoursesStub upc = new UPMCoursesStub();
 		CheckCourse chk = new CheckCourse();
 		chk.setArgs0(addCourseGrade.getArgs0().getCourse());
 		if(!upc.checkCourse(chk).get_return()) {
-			System.out.println("\tLa asignatura no existe");
 			return response;
 		}
 		String course = addCourseGrade.getArgs0().getCourse(); // Asignatura a cambiar y nota que se le quiere poner
@@ -336,7 +295,6 @@ public class UserManagementWSSkeleton{
 		if(userGrades.get(sessionUser.getName()) != null) 
 			hm = userGrades.get(sessionUser.getName());
 		hm.put(course, grade); // Introduzco la asignatura y su nota
-		System.out.println(course + " " + grade + " " + hm);
 		userGrades.put(sessionUser.getName(), hm); // Guardo todas las notas del usuario en la lista global
 		r.setResponse(true);
 		return response;
