@@ -1,7 +1,6 @@
 package es.upm.fi.sos.t3.usermanagement.client;
 
 import java.rmi.RemoteException;
-
 import es.upm.fi.sos.t3.usermanagement.client.UserManagementWSStub.*;
 
 public class UserManagementClient {
@@ -20,7 +19,23 @@ public class UserManagementClient {
 			System.out.println("\tLista vacía");
 		}
 	}
-	
+	private static boolean compareDoubleArrays(double [] c1, double [] c2) {
+		if (c1 == null && c2 == null) 
+			return true;
+			
+		if (c1 == null || c2 == null) 
+			return false;
+		
+		
+		if (c1.length != c2.length)
+			return false;
+		
+		for (int i = 0; i < c1.length ; i++) {
+			if (!(c1[i]==c2[i])) 
+				return false;
+		}
+		return true;
+	}
 	private static boolean compareCourses(String [] c1, String [] c2) {
 		if (c1 == null && c2 == null) 
 			return true;
@@ -61,7 +76,12 @@ public class UserManagementClient {
 		RemoveUser ru = new RemoveUser();
 		RemoveUserResponse rur = new RemoveUserResponse();
 		Username un = new Username();
-				
+		CourseGrade cg = new CourseGrade();
+		AddCourseGrade acg = new AddCourseGrade();
+		AddCourseGradeResponse acgr = new AddCourseGradeResponse();
+		ShowAllGradesResponse sar = new ShowAllGradesResponse();
+		ShowAllGrades sag = new ShowAllGrades();
+		
 		// User admin
 		User admin = new User();
 		admin.setName("admin");
@@ -349,6 +369,57 @@ public class UserManagementClient {
 		 * 
 		 * IF tested both functions, close #9 and #8
 		 */
+		
+		System.out.println("Test "+ test++ + ": Add Course Grade 1 (user1 logged)");
+		cg.setCourse("LOGICA");
+		cg.setGrade(4);
+		acg.setArgs0(cg);
+		acgr = st.addCourseGrade(acg);
+		response = acgr.get_return().getResponse()== true ? "OK":"Failure"; 
+		System.out.println("\tResponse: "+ acgr.get_return().getResponse());
+		System.out.println("\tExpected: true");
+		System.out.println("\tTest: ---> " + response);
+		
+		System.out.println("Test "+ test++ + ": Add Course Grade 2 (user1 logged)");
+		cg.setCourse("CALCULO");
+		cg.setGrade(1);
+		acg.setArgs0(cg);
+		acgr = st.addCourseGrade(acg);
+		response = acgr.get_return().getResponse()== true ? "OK":"Failure"; 
+		System.out.println("\tResponse: "+ acgr.get_return().getResponse());
+		System.out.println("\tExpected: true");
+		System.out.println("\tTest: ---> " + response);
+		
+		System.out.println("Test "+ test++ + ": Add Course Grade 3 (user1 logged)");
+		cg.setCourse("PROGRAMACION I");
+		cg.setGrade(9);
+		acg.setArgs0(cg);
+		acgr = st.addCourseGrade(acg);
+		response = acgr.get_return().getResponse()== true ? "OK":"Failure"; 
+		System.out.println("\tResponse: "+ acgr.get_return().getResponse());
+		System.out.println("\tExpected: true");
+		System.out.println("\tTest: ---> " + response);
+		
+		System.out.println("Test "+ test++ + ": Add Course Grade 4 (user1 logged)");
+		cg.setCourse("SISTEMAS DIGITALES");
+		cg.setGrade(7);
+		acg.setArgs0(cg);
+		acgr = st.addCourseGrade(acg);
+		response = acgr.get_return().getResponse()== true ? "OK":"Failure"; 
+		System.out.println("\tResponse: "+ acgr.get_return().getResponse());
+		System.out.println("\tExpected: true");
+		System.out.println("\tTest: ---> " + response);
+		
+		System.out.println("Test "+ test++ + ": Show All Grades (user1 logged)");
+		sar = st.showAllGrades(sag);
+		String [] expectedCourses = {"PROGRAMACION I", "SISTEMAS DIGITALES", "LOGICA", "CALCULO"};
+		double [] expectedGrades = {9.0,7.0,4.0,1.0};
+		response = sar.get_return().getResult()== true ? "OK":"Failure";
+		System.out.println("\tResponse: "+ scr.get_return().getResult());
+		System.out.println("\tExpected: true");
+		System.out.println("\tSame response list (Courses): "+ compareCourses(expectedCourses, sar.get_return().getCourses()));
+		System.out.println("\tSame response list (Grades): "+ compareDoubleArrays(expectedGrades, sar.get_return().getGrades()));
+		System.out.println("\tTest: ---> " + response);
 		
 	}
 

@@ -2,6 +2,7 @@ import java.rmi.RemoteException;
 
 import es.upm.fi.sos.t3.usermanagement.*;
 import es.upm.fi.sos.t3.usermanagement.xsd.Course;
+import es.upm.fi.sos.t3.usermanagement.xsd.CourseGrade;
 import es.upm.fi.sos.t3.usermanagement.xsd.PasswordPair;
 import es.upm.fi.sos.t3.usermanagement.xsd.User;
 import es.upm.fi.sos.t3.usermanagement.xsd.Username;
@@ -31,156 +32,57 @@ public class MainTester {
 		lr = UM.login(l);
 		System.out.println("Response: " + lr.get_return().getResponse());
 		
-		// User 1 is not in the system
-		System.out.println("Login de " + u1.getName());
-		l.setArgs0(u1);
-		lr = UM.login(l);
-		System.out.println("Response: " + lr.get_return().getResponse());
-
-		// Adding User1
-		System.out.println("Añadiendo a " + u1.getName());
 		AddUser au = new AddUser();
-		au.setArgs0(u1);
 		AddUserResponse aur = new AddUserResponse();
+		au.setArgs0(u1);
 		aur = UM.addUser(au);
-		System.out.println("Response: " + aur.get_return().getResponse());
-
-		// Logout admin
-		System.out.println("Logout de admin");
+		System.out.println(aur);
+		
 		Logout lo = new Logout();
 		UM.logout(lo);
+		System.out.println("Deslogueando admin");
 		
-		// User1 is not in the system
 		System.out.println("Login de " + u1.getName());
-		l.setArgs0(u1);
-		lr = UM.login(l);
-		System.out.println("Response: " + lr.get_return().getResponse());
-
-		// Logout user1
-		System.out.println("Logout de user1");
-		UM.logout(lo);
-		
-		// Logout admin
-		System.out.println("Logout de admin (no hace nada)");
-		UM.logout(lo);
-				
-		// Logout user1
-		System.out.println("Logout de user1 (no hace nada)");
-		UM.logout(lo);
-		
-		// Not a real user (not the password it should be)
-		User fake = new User();
-		fake.setName("usuario1");
-		fake.setPwd("WRONG pwd");
-		
-		// User1 is not in the system
-		System.out.println("Login de " + fake.getName()+ " falso");
-		l.setArgs0(fake);
-		lr = UM.login(l);
-		System.out.println("Response: " + lr.get_return().getResponse());
-		
-		// Login admin
-		System.out.println("Login de " + admin.getName());
-		l.setArgs0(admin);
-		lr = UM.login(l);
-		System.out.println("Response: " + lr.get_return().getResponse());
-		
-		// Show Courses 1
-		ShowCoursesResponse scr = new ShowCoursesResponse();
-		ShowCourses sc = new ShowCourses();
-		Course c = new Course();
-		c.setCourse(1);
-		System.out.println("ShowCourses de " + c.getCourse());
-		sc.setArgs0(c);
-		scr = UM.showCourses(sc);
-		System.out.println("Lista: ");
-		String [] arr = scr.get_return().getCourseList();
-		if (arr != null) {
-			for(String i: arr) {
-				System.out.println("\t" + i.toString());
-			}
-		}
-		else {
-			System.out.println("\tLista vacía");
-		}
-		System.out.println("Response: " + scr.get_return().getResult());
-		
-		// Logout admin
-		System.out.println("Logout de admin");
-		UM.logout(lo);
-		
-		// Show Courses 1
-		c.setCourse(1);
-		System.out.println("ShowCourses de " + c.getCourse());
-		sc.setArgs0(c);
-		scr = UM.showCourses(sc);
-		System.out.println("Lista: ");
-		arr = scr.get_return().getCourseList();
-		if (arr != null) {
-			for(String i: arr) {
-				System.out.println("\t" + i.toString());
-			}
-		}
-		else {
-			System.out.println("\tLista vacía");
-		}
-		System.out.println("Response: " + scr.get_return().getResult());
-		
-		// Login admin
-		System.out.println("Login de " + admin.getName() + " (ya estaba logeado)");
-		l.setArgs0(admin);
-		lr = UM.login(l);
-		System.out.println("Response: " + lr.get_return().getResponse());
-		
-		// Login admin
-		System.out.println("Login de " + admin.getName() + " (ya estaba logeado)");
-		l.setArgs0(admin);
-		lr = UM.login(l);
-		System.out.println("Response: " + lr.get_return().getResponse());
-		
-		// Login admin
-		System.out.println("Login de " + u1.getName() + " estando admin loggeado");
+		lr = new LoginResponse();
+		l = new Login();
 		l.setArgs0(u1);
 		lr = UM.login(l);
 		System.out.println("Response: " + lr.get_return().getResponse());
 		
-		// Adding User1
-		System.out.println("Añadiendo a " + u1.getName());
-		au.setArgs0(u1);
-		aur = UM.addUser(au);
-		System.out.println("Response: " + aur.get_return().getResponse());
+		CourseGrade cg = new CourseGrade();
+		AddCourseGrade acg = new AddCourseGrade();
+		System.out.println("Añadiendo notas a asignaturas:");
+		cg.setCourse("LOGICA");
+		cg.setGrade(4);
+		acg.setArgs0(cg);
+		System.out.println("\tResponse de añadir un 4 en LOGICA: " + UM.addCourseGrade(acg).get_return().getResponse());
+		cg.setCourse("CALCULO");
+		cg.setGrade(1);
+		acg.setArgs0(cg);
+		System.out.println("\tResponse de añadir un 1 en CALCULO: " + UM.addCourseGrade(acg).get_return().getResponse());
+		cg.setCourse("PROGRAMACION I");
+		cg.setGrade(9);
+		acg.setArgs0(cg);
+		System.out.println("\tResponse de añadir un 9 en PROGRAMACION I: " + UM.addCourseGrade(acg).get_return().getResponse());
+		cg.setCourse("SISTEMAS DIGITALES");
+		cg.setGrade(7);
+		acg.setArgs0(cg);
+		System.out.println("\tResponse de añadir un 7 en SISTEMAS DIGITALES: " + UM.addCourseGrade(acg).get_return().getResponse());
 		
-		PasswordPair pw = new PasswordPair();
-		ChangePassword cp = new ChangePassword();
-		ChangePasswordResponse cpr = new ChangePasswordResponse();
-		pw.setOldpwd("admin");
-		pw.setNewpwd("new");
-		cp.setArgs0(pw);
-		cpr = UM.changePassword(cp);
-		System.out.println("Response: " + cpr.get_return().getResponse());
 
 		
-		Username un = new Username();
-		RemoveUser ru = new RemoveUser();
-		RemoveUserResponse rur = new RemoveUserResponse();
-		un.setUsername(admin.getName());
-		ru.setArgs0(un);
-		rur = UM.removeUser(ru);
-		System.out.println("Response: " + rur.get_return().getResponse());
-		// logout admin
-		UM.logout(lo);
+		ShowAllGradesResponse sar = new ShowAllGradesResponse();
+		ShowAllGrades sag = new ShowAllGrades();
+		sar = UM.showAllGrades(sag);
+		String [] courses = sar.get_return().getCourses();
+		double [] grades = sar.get_return().getGrades();
+		System.out.println("Lista de asignaturas y notas:");
 		
-		un.setUsername(u1.getName());
-		ru.setArgs0(un);
-		rur = UM.removeUser(ru);
-		System.out.println("\tResponse: "+ rur.get_return().getResponse());
-		
-		c.setCourse(0);
-		sc.setArgs0(c);
-		scr = UM.showCourses(sc);
-		final String [] EMPTYCOURSE = scr.get_return().getCourseList();
-		System.out.println("\tResponse: "+ rur.get_return().getResponse());
-		printCourses(EMPTYCOURSE);
+		for (int i = 0;i < courses.length;i++) {
+			System.out.println(courses[i] + ": " + grades[i]);
+		}
+		System.out.println("Response lista de notas: " + sar.get_return().getResult());
+		System.out.println(grades[0] + " "+grades[1]+ " "+grades[2]+ " "+grades[3]);
 		}
 	
 	private static void printCourses(String [] arr) {

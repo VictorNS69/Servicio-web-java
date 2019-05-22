@@ -13,9 +13,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.axis2.AxisFault;
-
-import es.upm.fi.sos.t3.usermanagement.xsd.Course;
 import es.upm.fi.sos.t3.usermanagement.xsd.CourseResponse;
 import es.upm.fi.sos.t3.usermanagement.xsd.GradesResponse;
 import es.upm.fi.sos.t3.usermanagement.xsd.Response;
@@ -38,7 +35,6 @@ public class UserManagementWSSkeleton{
 	public UserManagementWSSkeleton() {
 		this.users = new HashMap<String, User>();
 		this.userGrades = new HashMap<String, HashMap<String, Double>>();
-		
 		this.activeUsers = new ArrayList<>();
 		if (this.users.isEmpty()){
 			User user = new User();
@@ -187,7 +183,9 @@ public class UserManagementWSSkeleton{
 		if(!this.isLogged)
 			return response;
 		HashMap<String, Double> grades = userGrades.get(sessionUser.getName());
+		System.out.println(grades);
 		Set<String> courses = grades.keySet();
+		System.out.println(courses);
 		ArrayList<String> coursesList = new ArrayList<>(); 
 		ArrayList<Double> gradesList = new ArrayList<>();
 		
@@ -195,21 +193,31 @@ public class UserManagementWSSkeleton{
 			Double act = grades.get(k);
 			if (gradesList.isEmpty()) { // Si array vacio inserto al principio
 				gradesList.add(act);
+				coursesList.add(k);
 			} else {
+				System.out.println("Entro aqui "+ k + " " + gradesList.size());
 				boolean found = false;
-				for(int i=0;i<gradesList.size() && !found;i++) {
+				int size = gradesList.size();
+				for(int i=0;i<size && !found;i++) {
 					if (act > gradesList.get(i)) {
 						gradesList.add(i, act);
+						System.out.println(k);
 						coursesList.add(i, k);
+						System.out.println(act);
 						found = true;
+					} else if(i==gradesList.size()-1){
+						gradesList.add(act);
+						coursesList.add(k);
 					}
 				}
 			}		
 		}
-		String[] coursesArray = (String[]) coursesList.toArray();
+		
+		String[] coursesArray = new String[courses.size()];
 		double[] gradesArray = new double[courses.size()];
 		for (int i=0;i<gradesList.size();i++) {
 			gradesArray[i] = gradesList.get(i);
+			coursesArray[i] = coursesList.get(i);
 		}
 		r.setCourses(coursesArray);
 		r.setGrades(gradesArray);
@@ -324,9 +332,11 @@ public class UserManagementWSSkeleton{
 		}
 		String course = addCourseGrade.getArgs0().getCourse(); // Asignatura a cambiar y nota que se le quiere poner
 		Double grade = addCourseGrade.getArgs0().getGrade();
-		HashMap<String, Double> hm = new HashMap<>(); // Creo un HashMap y le asigno las asignaturas del usuario actual
-		hm = userGrades.get(sessionUser.getName());
-		hm.put(course, grade); // INtroduzco la asignatura y su nota
+		HashMap<String, Double> hm = new HashMap<String, Double>(); // Creo un HashMap y le asigno las asignaturas del usuario actual
+		if(userGrades.get(sessionUser.getName()) != null) 
+			hm = userGrades.get(sessionUser.getName());
+		hm.put(course, grade); // Introduzco la asignatura y su nota
+		System.out.println(course + " " + grade + " " + hm);
 		userGrades.put(sessionUser.getName(), hm); // Guardo todas las notas del usuario en la lista global
 		r.setResponse(true);
 		return response;
