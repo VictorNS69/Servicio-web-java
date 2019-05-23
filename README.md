@@ -23,7 +23,7 @@ Para ver el enunciado de la práctica pincha [aquí](/doc/PracticaSW2019.pdf).
 
 ## Requisitos
 - Tomcat 7
-- axis2 1.6
+- axis2 1.6.2
 
 ## Añadir el proyecto en Tomcat y/o axis2
 - Primero debes generar el fichero aar
@@ -48,7 +48,9 @@ Pasados unos segundos, ya podrás usar el servidor.
 Hecho esto, al cabo de unos segundos, ya podrás usar el servidor.
 
 ## Ejecutar cliente
-\#TODO Exportar a jar el cliente y ejecutar
+Para ejecutar el cliente, tienes que haber añadido el proyecto a Tomcat y/o axis2, tienes que tener el servidor funcionando. Para saber si está funcionando, con acceder a `http://localhost:8080/axis2/services/listServices` y ver que aparecen los servicios de `UserManagementWS` significará que el servidor está funcionando correctamente.
+
+Luego tienes que importar el directorio [UserManagementClient](/UserManagementClient), y **ejecutar como aplicación java el archivo [`UserManagementClient.java`](UserManagementClient/src/es/upm/fi/sos/t3/usermanagement/client/UserManagementClient.java).**
 
 ## Autores
 [Víctor Nieves Sánchez](https://twitter.com/VictorNS69)
