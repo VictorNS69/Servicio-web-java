@@ -402,12 +402,38 @@ public class UserManagementClient {
 		System.out.println("\tExpected: true");
 		System.out.println("\tTest: ---> " + response);
 		
-		System.out.println("Test "+ test++ + ": Show All Grades (user1 logged)");
+		// logout user1
+		st.logout(logout);
+		
+		System.out.println("Test "+ test++ + ": Add Course Grade 5 (nobody logged)");
+		cg.setCourse("SISTEMAS DIGITALES");
+		cg.setGrade(7);
+		acg.setArgs0(cg);
+		acgr = st.addCourseGrade(acg);
+		response = acgr.get_return().getResponse()== false ? "OK":"Failure"; 
+		System.out.println("\tResponse: "+ acgr.get_return().getResponse());
+		System.out.println("\tExpected: false");
+		System.out.println("\tTest: ---> " + response);
+		
+		System.out.println("Test "+ test++ + ": Show All Grades 1 (nobody logged)");
 		sar = st.showAllGrades(sag);
 		String [] expectedCourses = {"PROGRAMACION I", "SISTEMAS DIGITALES", "LOGICA", "CALCULO"};
 		double [] expectedGrades = {9.0,7.0,4.0,1.0};
+		response = sar.get_return().getResult()== false ? "OK":"Failure";
+		System.out.println("\tResponse: "+ sar.get_return().getResult());
+		System.out.println("\tExpected: false");
+		System.out.println("\tSame response list (Courses): "+ compareCourses(expectedCourses, sar.get_return().getCourses()));
+		System.out.println("\tSame response list (Grades): "+ compareDoubleArrays(expectedGrades, sar.get_return().getGrades()));
+		System.out.println("\tTest: ---> " + response);
+		
+		// login user1
+		login.setArgs0(user1);
+		st.login(login);
+		
+		System.out.println("Test "+ test++ + ": Show All Grades 2 (user1 logged)");
+		sar = st.showAllGrades(sag);
 		response = sar.get_return().getResult()== true ? "OK":"Failure";
-		System.out.println("\tResponse: "+ scr.get_return().getResult());
+		System.out.println("\tResponse: "+ sar.get_return().getResult());
 		System.out.println("\tExpected: true");
 		System.out.println("\tSame response list (Courses): "+ compareCourses(expectedCourses, sar.get_return().getCourses()));
 		System.out.println("\tSame response list (Grades): "+ compareDoubleArrays(expectedGrades, sar.get_return().getGrades()));
