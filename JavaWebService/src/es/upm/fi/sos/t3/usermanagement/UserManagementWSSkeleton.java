@@ -51,18 +51,18 @@ public class UserManagementWSSkeleton{
 	 */
 	public es.upm.fi.sos.t3.usermanagement.ChangePasswordResponse changePassword
 			(es.upm.fi.sos.t3.usermanagement.ChangePassword changePassword){
-		 ChangePasswordResponse response = new ChangePasswordResponse();
-	        Response r = new Response();
-	        r.setResponse(false);
-	        response.set_return(r);
-	        if (this.isLogged || this.sessionUser != null) {
-	            if(this.sessionUser.getPwd().equals(changePassword.localArgs0.getOldpwd())){
-	                this.sessionUser.setPwd(changePassword.localArgs0.getNewpwd());
-	                r.setResponse(true);
-	                response.set_return(r);        
-	            }    
-	        }
-	        return response;
+		ChangePasswordResponse response = new ChangePasswordResponse();
+	    Response r = new Response();
+	    r.setResponse(false);
+	    response.set_return(r);
+	    if (this.isLogged || this.sessionUser != null) {
+	        if(this.sessionUser.getPwd().equals(changePassword.localArgs0.getOldpwd())){
+	            this.sessionUser.setPwd(changePassword.localArgs0.getNewpwd());
+	            r.setResponse(true);
+	            response.set_return(r);        
+	        }    
+	    }
+	    return response;
 	}
 
 	/**
@@ -107,6 +107,7 @@ public class UserManagementWSSkeleton{
 			System.out.println("Loggin succes");
 			return response; // true
 		}
+		System.out.println("Active user: " + this.sessionUser);
 		System.out.println("Loggin Else ");
 		return response; // false
 	}
@@ -141,6 +142,8 @@ public class UserManagementWSSkeleton{
 		if (!this.isLogged || this.sessionUser == null) {
 			return response;
 		}
+		System.out.println("Is logged: " + this.isLogged);
+		System.out.println("SessionUser: " + this.sessionUser.getName());
 		UPMCoursesStub upc = new UPMCoursesStub();
 		UPMCoursesStub.ShowCourses sc = new UPMCoursesStub.ShowCourses();
 		UPMCoursesStub.ShowCoursesResponse scr = new UPMCoursesStub.ShowCoursesResponse();
