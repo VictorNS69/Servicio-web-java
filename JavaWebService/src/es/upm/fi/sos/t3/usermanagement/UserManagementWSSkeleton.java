@@ -23,9 +23,9 @@ import es.upm.fi.sos.t3.usermanagement.UPMCoursesStub.*;
  */
 public class UserManagementWSSkeleton{
 
-	private HashMap<String, User> users;
-	private HashMap<String, HashMap<String, Double>> userGrades;
-	private List<String> activeUsers;
+	private static HashMap<String, User> users  = new HashMap<String, User>();
+	private static HashMap<String, HashMap<String, Double>> userGrades = new HashMap<String, HashMap<String, Double>>();
+	private static List<String> activeUsers = new ArrayList<>();
 	private User sessionUser;
 	private Boolean isLogged;
 	
@@ -33,14 +33,11 @@ public class UserManagementWSSkeleton{
 	 * Initializes the server with "admin" user
 	 */
 	public UserManagementWSSkeleton() {
-		this.users = new HashMap<String, User>();
-		this.userGrades = new HashMap<String, HashMap<String, Double>>();
-		this.activeUsers = new ArrayList<>();
-		if (this.users.isEmpty()){
+		if (UserManagementWSSkeleton.users.isEmpty()){
 			User user = new User();
 			user.setName("admin");
 			user.setPwd("admin");
-			this.users.put("admin", user);
+			UserManagementWSSkeleton.users.put("admin", user);
 		}
 		this.sessionUser = null;
 		this.isLogged = false;
@@ -81,28 +78,36 @@ public class UserManagementWSSkeleton{
 		r.setResponse(false);	// False initialization 
 		response.set_return(r);
 		User user = login.getArgs0();
+
+		System.out.println("Users: " + UserManagementWSSkeleton.users.toString());
+		System.out.println("User name: " + user.getName());
 		// If user logins again while he is already logged
 		if (this.sessionUser != null && user.getName().equals(
 				this.sessionUser.getName()) && this.isLogged) {
+			System.out.println("Already logged");
 			r.setResponse(true);
 			return response; // true
 		}
 		// If user doesn't exist
-		if (this.users.get(user.getName()) == null){
+		if (UserManagementWSSkeleton.users.get(user.getName()) == null){
+			System.out.println("User doesnt exist");
 			return response; // false
 		}
 		// If user has entered the password well
-		if (!user.getPwd().equals(this.users.get(user.getName()).getPwd())) {
+		if (!user.getPwd().equals(UserManagementWSSkeleton.users.get(user.getName()).getPwd())) {
+			System.out.println("Wrong pwd");
 			return response; // false
 		}
 		// Login the user
 		if (!this.isLogged) {
 			this.isLogged = true;
-			this.activeUsers.add(user.getName());
-			this.sessionUser = this.users.get(user.getName());
+			UserManagementWSSkeleton.activeUsers.add(user.getName());
+			this.sessionUser = UserManagementWSSkeleton.users.get(user.getName());
 			r.setResponse(true);
+			System.out.println("Loggin succes");
 			return response; // true
 		}
+		System.out.println("Loggin Else ");
 		return response; // false
 	}
 
@@ -115,7 +120,7 @@ public class UserManagementWSSkeleton{
 	public void logout(es.upm.fi.sos.t3.usermanagement.Logout logout){
 		if(this.isLogged){
 			this.isLogged = false;
-			this.activeUsers.remove(this.sessionUser.getName());
+			UserManagementWSSkeleton.activeUsers.remove(this.sessionUser.getName());
 			this.sessionUser = null;
 		}
 	}
@@ -215,11 +220,11 @@ public class UserManagementWSSkeleton{
 			return response;	// False
 		}
 		// User exist 
-		if(this.users.containsKey(user.getName())){
+		if(UserManagementWSSkeleton.users.containsKey(user.getName())){
 			return response;	// False
 		}
 		// Add the user
-		this.users.put(user.getName(), user);
+		UserManagementWSSkeleton.users.put(user.getName(), user);
 		r.setResponse(true);
 		return response;	// True
 	}
@@ -237,27 +242,33 @@ public class UserManagementWSSkeleton{
         Response r = new Response();
         r.setResponse(false);
         response.set_return(r);
-
-        if(!this.isLogged || this.users.get(this.sessionUser.getName()) == null)
-            return response;
-        
-        // Nobody can remove the admin
-        if (removeUser.getArgs0().getUsername().equals("admin"))
+        System.out.println("Active users: " + UserManagementWSSkeleton.activeUsers.toString());
+        if(!this.isLogged || UserManagementWSSkeleton.users.get(this.sessionUser.getName()) == null) {
+            System.out.println("En el if 1");
         	return response;
-        
+        }
+        // Nobody can remove the admin
+        if (removeUser.getArgs0().getUsername().equals("admin")) {
+        	System.out.println("En el if 2");
+        	return response;
+        }
         if(this.sessionUser.getName().equals("admin")) {
-            this.users.remove(removeUser.getArgs0().getUsername());
+        	System.out.println("En el if 3");
+        	UserManagementWSSkeleton.users.remove(removeUser.getArgs0().getUsername());
             r.setResponse(true);
             return response;
         } 
         else {
-            if(this.activeUsers.contains(removeUser.getArgs0().getUsername()))
-                return response;
-            
-            if(!this.sessionUser.getName().equals(removeUser.getArgs0().getUsername()))
-                return response;
-            
-            this.users.remove(removeUser.getArgs0().getUsername());
+            if(UserManagementWSSkeleton.activeUsers.contains(removeUser.getArgs0().getUsername())) {
+            	System.out.println("En el if 4");
+            	return response;
+            }
+            if(!this.sessionUser.getName().equals(removeUser.getArgs0().getUsername())) {
+            	System.out.println("En el if 5");
+            	return response;
+            }
+            System.out.println("En el else");
+            UserManagementWSSkeleton.users.remove(removeUser.getArgs0().getUsername());
             r.setResponse(true);
             return response;
         }
