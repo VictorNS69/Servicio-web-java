@@ -144,6 +144,8 @@ public class UserManagementWSSkeleton{
 		}
 		System.out.println("Is logged: " + this.isLogged);
 		System.out.println("SessionUser: " + this.sessionUser.getName());
+		if (showCourses.getArgs0().getCourse() < 1 || showCourses.getArgs0().getCourse() > 4)
+			return response;
 		UPMCoursesStub upc = new UPMCoursesStub();
 		UPMCoursesStub.ShowCourses sc = new UPMCoursesStub.ShowCourses();
 		UPMCoursesStub.ShowCoursesResponse scr = new UPMCoursesStub.ShowCoursesResponse();
@@ -313,7 +315,6 @@ public class UserManagementWSSkeleton{
 		r.setResponse(true);
 		return response;
 	}
-
 }
 
 

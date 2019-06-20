@@ -446,6 +446,16 @@ public class UserManagementClient {
 		System.out.println("\tSame response list (Grades): "+ compareDoubleArrays(expectedGrades, sar.get_return().getGrades()));
 		System.out.println("\tTest: ---> " + response);
 		
+		System.out.println("Test "+ test++ + ": Show Courses 6 (user1 logged)");
+		c.setCourse(6);
+		sc.setArgs0(c);
+		scr = st.showCourses(sc);
+		response = scr.get_return().getResult()== false ? "OK":"Failure"; 
+		System.out.println("\tResponse: "+ scr.get_return().getResult());
+		System.out.println("\tExpected: false");
+		System.out.println("\tSame response list: "+ compareCourses(EMPTYCOURSE, scr.get_return().getCourseList()));
+		System.out.println("\tTest: ---> " + response);
+		
 		System.out.println("-------------- TESTS WITH SEVERAL CLIENTS (STUBS) --------------");
 			
 		System.out.println("Test "+ test++ + ": Valid login (user1) - Stub 2");	
@@ -515,5 +525,36 @@ public class UserManagementClient {
 		System.out.println("\tResponse: Void");
 		System.out.println("\tExpected: Void");
 		System.out.println("\tTest: ---> OK");
+		
+		st.logout(logout);
+		st.logout(logout);
+		st2.logout(logout);
+		st2.logout(logout);
+		// At this point, nobody is logged in st and st2
+		
+		// Login of user1 in both clients
+		login.setArgs0(user1);
+		lr = st.login(login);
+		lr = st2.login(login);
+		
+		System.out.println("Test "+ test++ + ": Change user1 password (user1 logged) - Stub 1");
+		pw.setOldpwd("user1");
+		pw.setNewpwd("new");
+		cp.setArgs0(pw);
+		cpr = st.changePassword(cp);
+		response = cpr.get_return().getResponse() == true ? "OK":"Failure"; 
+		System.out.println("\tResponse: "+ cpr.get_return().getResponse());
+		System.out.println("\tExpected: true");
+		System.out.println("\tTest: ---> " + response);
+		
+		System.out.println("Test "+ test++ + ": Change user1 password (user1 logged) (wrong password) - Stub 2");
+		pw.setOldpwd("user1");
+		pw.setNewpwd("new");
+		cp.setArgs0(pw);
+		cpr = st.changePassword(cp);
+		response = cpr.get_return().getResponse() == false ? "OK":"Failure"; 
+		System.out.println("\tResponse: "+ cpr.get_return().getResponse());
+		System.out.println("\tExpected: false");
+		System.out.println("\tTest: ---> " + response);
 	}
 }
