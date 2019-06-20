@@ -56,6 +56,9 @@ public class UserManagementWSSkeleton{
 	    r.setResponse(false);
 	    response.set_return(r);
 	    if (this.isLogged || this.sessionUser != null) {
+	    	if (!UserManagementWSSkeleton.activeUsers.contains(this.sessionUser.getName())){
+	    		return response;
+		    }
 	        if(this.sessionUser.getPwd().equals(changePassword.localArgs0.getOldpwd())){
 	            this.sessionUser.setPwd(changePassword.localArgs0.getNewpwd());
 	            r.setResponse(true);
@@ -79,23 +82,18 @@ public class UserManagementWSSkeleton{
 		response.set_return(r);
 		User user = login.getArgs0();
 
-		System.out.println("Users: " + UserManagementWSSkeleton.users.toString());
-		System.out.println("User name: " + user.getName());
 		// If user logins again while he is already logged
 		if (this.sessionUser != null && user.getName().equals(
 				this.sessionUser.getName()) && this.isLogged) {
-			System.out.println("Already logged");
 			r.setResponse(true);
 			return response; // true
 		}
 		// If user doesn't exist
 		if (UserManagementWSSkeleton.users.get(user.getName()) == null){
-			System.out.println("User doesnt exist");
 			return response; // false
 		}
 		// If user has entered the password well
 		if (!user.getPwd().equals(UserManagementWSSkeleton.users.get(user.getName()).getPwd())) {
-			System.out.println("Wrong pwd");
 			return response; // false
 		}
 		// Login the user
@@ -104,11 +102,8 @@ public class UserManagementWSSkeleton{
 			UserManagementWSSkeleton.activeUsers.add(user.getName());
 			this.sessionUser = UserManagementWSSkeleton.users.get(user.getName());
 			r.setResponse(true);
-			System.out.println("Loggin succes");
 			return response; // true
 		}
-		System.out.println("Active user: " + this.sessionUser);
-		System.out.println("Loggin Else ");
 		return response; // false
 	}
 
@@ -142,8 +137,9 @@ public class UserManagementWSSkeleton{
 		if (!this.isLogged || this.sessionUser == null) {
 			return response;
 		}
-		System.out.println("Is logged: " + this.isLogged);
-		System.out.println("SessionUser: " + this.sessionUser.getName());
+		if (!UserManagementWSSkeleton.activeUsers.contains(this.sessionUser.getName())){
+    		return response;
+	    }
 		if (showCourses.getArgs0().getCourse() < 1 || showCourses.getArgs0().getCourse() > 4)
 			return response;
 		UPMCoursesStub upc = new UPMCoursesStub();
@@ -170,6 +166,9 @@ public class UserManagementWSSkeleton{
 		response.set_return(r);
 		if(!this.isLogged)
 			return response;
+		if (!UserManagementWSSkeleton.activeUsers.contains(this.sessionUser.getName())){
+    		return response;
+	    }
 		HashMap<String, Double> grades = userGrades.get(sessionUser.getName());
 		Set<String> courses = grades.keySet();
 		ArrayList<String> coursesList = new ArrayList<>(); 
@@ -228,6 +227,9 @@ public class UserManagementWSSkeleton{
 		if(UserManagementWSSkeleton.users.containsKey(user.getName())){
 			return response;	// False
 		}
+		if (!UserManagementWSSkeleton.activeUsers.contains(this.sessionUser.getName())){
+    		return response;
+	    }
 		// Add the user
 		UserManagementWSSkeleton.users.put(user.getName(), user);
 		r.setResponse(true);
@@ -247,33 +249,34 @@ public class UserManagementWSSkeleton{
         Response r = new Response();
         r.setResponse(false);
         response.set_return(r);
-        System.out.println("Active users: " + UserManagementWSSkeleton.activeUsers.toString());
         if(!this.isLogged || UserManagementWSSkeleton.users.get(this.sessionUser.getName()) == null) {
-            System.out.println("En el if 1");
         	return response;
         }
         // Nobody can remove the admin
         if (removeUser.getArgs0().getUsername().equals("admin")) {
-        	System.out.println("En el if 2");
         	return response;
         }
         if(this.sessionUser.getName().equals("admin")) {
-        	System.out.println("En el if 3");
         	UserManagementWSSkeleton.users.remove(removeUser.getArgs0().getUsername());
+        	while (UserManagementWSSkeleton.activeUsers.contains(removeUser.getArgs0().getUsername())) {
+            	UserManagementWSSkeleton.activeUsers.remove(removeUser.getArgs0().getUsername());
+            }
+        	UserManagementWSSkeleton.userGrades.remove(removeUser.getArgs0().getUsername());
             r.setResponse(true);
             return response;
         } 
         else {
-            if(UserManagementWSSkeleton.activeUsers.contains(removeUser.getArgs0().getUsername())) {
-            	System.out.println("En el if 4");
+            if(!UserManagementWSSkeleton.activeUsers.contains(removeUser.getArgs0().getUsername())) {
             	return response;
             }
             if(!this.sessionUser.getName().equals(removeUser.getArgs0().getUsername())) {
-            	System.out.println("En el if 5");
             	return response;
             }
-            System.out.println("En el else");
             UserManagementWSSkeleton.users.remove(removeUser.getArgs0().getUsername());
+            while (UserManagementWSSkeleton.activeUsers.contains(removeUser.getArgs0().getUsername())) {
+            	UserManagementWSSkeleton.activeUsers.remove(removeUser.getArgs0().getUsername());
+            }
+			UserManagementWSSkeleton.userGrades.remove(removeUser.getArgs0().getUsername());
             r.setResponse(true);
             return response;
         }
@@ -298,7 +301,9 @@ public class UserManagementWSSkeleton{
 		}
 		if(users.get(sessionUser.getName())==null)
             return response;
-		
+		if (!UserManagementWSSkeleton.activeUsers.contains(this.sessionUser.getName())){
+    		return response;
+	    }
 		UPMCoursesStub upc = new UPMCoursesStub();
 		CheckCourse chk = new CheckCourse();
 		chk.setArgs0(addCourseGrade.getArgs0().getCourse());
@@ -316,13 +321,3 @@ public class UserManagementWSSkeleton{
 		return response;
 	}
 }
-
-
-
-
-
-
-
-
-
-
