@@ -60,11 +60,7 @@ public class UserManagementClient {
 		UserManagementWSStub st = new UserManagementWSStub();
 		st._getServiceClient().engageModule("addressing");
 		st._getServiceClient().getOptions().setManageSession(true);
-		// Second stub (client)
-		UserManagementWSStub st2 = new UserManagementWSStub();
-		st2._getServiceClient().engageModule("addressing");
-		st2._getServiceClient().getOptions().setManageSession(true);
-		
+				
 		int test = 1;
 		Login login = new Login();
 		LoginResponse lr = new LoginResponse();
@@ -475,7 +471,11 @@ public class UserManagementClient {
 		System.out.println("\tTest: ---> " + response);
 		
 		System.out.println("\n-------------- TESTS WITH SEVERAL CLIENTS (STUBS) --------------");
-			
+		// Second stub (client)
+		UserManagementWSStub st2 = new UserManagementWSStub();
+		st2._getServiceClient().engageModule("addressing");
+		st2._getServiceClient().getOptions().setManageSession(true);
+		
 		System.out.println("Test "+ test++ + ": Valid login (user1) - Stub 2");	
 		login.setArgs0(user1);
 		lr = st2.login(login);
@@ -645,8 +645,6 @@ public class UserManagementClient {
 		
 		// Admin logout in stub 1
 		st.logout(logout);
-		//st.logout(logout);
-
 
 		System.out.println("Test "+ test++ + ": Add user1 (nobody logged) - Stub 1");	
 		au.setArgs0(user1);
@@ -675,5 +673,28 @@ public class UserManagementClient {
 		System.out.println("\tExpected: true");
 		System.out.println("\tSame response list: "+ compareCourses(EMPTYCOURSE, scr.get_return().getCourseList()));
 		System.out.println("\tTest: ---> " + response);
+		
+		st.logout(logout);
+		st.logout(logout);
+		st2.logout(logout);
+		st2.logout(logout);
+		// At this point, there is no logged users in any client
+		
+		// TODO: Hacer las siguientes pruebas:
+		// Notas fuera de rango
+			// notas mayores de 10 y menores de 0  -> error
+		
+		// Que pasa si la asignatura no existe?
+		
+		// Que pasa si añado una nota de un curso (asignatura) que no existe
+		
+		// Que pasa si modifico una nota que ya tenia antes una nota (probar desde varios clientes)
+		
+		// Que pasa si se llama a esas funciones sin nadie loggeado?
+		
+		// Orden en las notas de las asignaturas
+			// solo se tiene que devolver eso (el orden)?
+
+		// desde un stub modificar notas y que el otro las consulte
 	}
 }
