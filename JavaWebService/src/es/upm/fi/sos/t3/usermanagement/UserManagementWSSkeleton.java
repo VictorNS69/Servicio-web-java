@@ -153,7 +153,7 @@ public class UserManagementWSSkeleton{
 	}
 
 	/**
-	 * Shows user's all grades
+	 * Shows all grades of a given user
 	 * 
 	 * @param showAllGrades 
 	 * @return showAllGradesResponse 
@@ -297,21 +297,28 @@ public class UserManagementWSSkeleton{
 		response.set_return(r);
 		
 		if(!this.isLogged) {
+			System.out.println("no esta logueado");
 			return response;
 		}
-		if(users.get(sessionUser.getName())==null)
-            return response;
+		if(users.get(sessionUser.getName())==null) {
+			System.out.println("no existe usuairo");
+            return response;}
 		if (!UserManagementWSSkeleton.activeUsers.contains(this.sessionUser.getName())){
+			System.out.println("no existe usuario activo");
     		return response;
 	    }
 		UPMCoursesStub upc = new UPMCoursesStub();
 		CheckCourse chk = new CheckCourse();
 		chk.setArgs0(addCourseGrade.getArgs0().getCourse());
 		if(!upc.checkCourse(chk).get_return()) {
+			System.out.println("no existe la asignatura");
 			return response;
 		}
 		String course = addCourseGrade.getArgs0().getCourse(); // Asignatura a cambiar y nota que se le quiere poner
 		Double grade = addCourseGrade.getArgs0().getGrade();
+		if(grade < 0 || grade > 10) { // Comprobamos que la nota esta dentro de rango
+			System.out.println("la nota esta mal");
+			return response;}
 		HashMap<String, Double> hm = new HashMap<String, Double>(); // Creo un HashMap y le asigno las asignaturas del usuario actual
 		if(userGrades.get(sessionUser.getName()) != null) 
 			hm = userGrades.get(sessionUser.getName());
