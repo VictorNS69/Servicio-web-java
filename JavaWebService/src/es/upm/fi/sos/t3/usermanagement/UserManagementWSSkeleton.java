@@ -28,7 +28,7 @@ public class UserManagementWSSkeleton{
 	private static List<String> activeUsers = new ArrayList<>();
 	private User sessionUser;
 	private Boolean isLogged;
-	
+
 	/**
 	 * Initializes the server with "admin" user
 	 */
@@ -42,7 +42,7 @@ public class UserManagementWSSkeleton{
 		this.sessionUser = null;
 		this.isLogged = false;
 	}
-	
+
 	/**
 	 * A registered and logged user can change its password
 	 * 
@@ -50,22 +50,22 @@ public class UserManagementWSSkeleton{
 	 * @return changePasswordResponse 
 	 */
 	public es.upm.fi.sos.t3.usermanagement.ChangePasswordResponse changePassword
-			(es.upm.fi.sos.t3.usermanagement.ChangePassword changePassword){
+	(es.upm.fi.sos.t3.usermanagement.ChangePassword changePassword){
 		ChangePasswordResponse response = new ChangePasswordResponse();
-	    Response r = new Response();
-	    r.setResponse(false);
-	    response.set_return(r);
-	    if (this.isLogged || this.sessionUser != null) {
-	    	if (!UserManagementWSSkeleton.activeUsers.contains(this.sessionUser.getName())){
-	    		return response;
-		    }
-	        if(this.sessionUser.getPwd().equals(changePassword.localArgs0.getOldpwd())){
-	            this.sessionUser.setPwd(changePassword.localArgs0.getNewpwd());
-	            r.setResponse(true);
-	            response.set_return(r);        
-	        }    
-	    }
-	    return response;
+		Response r = new Response();
+		r.setResponse(false);
+		response.set_return(r);
+		if (this.isLogged || this.sessionUser != null) {
+			if (!UserManagementWSSkeleton.activeUsers.contains(this.sessionUser.getName())){
+				return response;
+			}
+			if(this.sessionUser.getPwd().equals(changePassword.localArgs0.getOldpwd())){
+				this.sessionUser.setPwd(changePassword.localArgs0.getNewpwd());
+				r.setResponse(true);
+				response.set_return(r);        
+			}    
+		}
+		return response;
 	}
 
 	/**
@@ -129,7 +129,7 @@ public class UserManagementWSSkeleton{
 	 * @throws RemoteException 
 	 */
 	public es.upm.fi.sos.t3.usermanagement.ShowCoursesResponse showCourses
-			(es.upm.fi.sos.t3.usermanagement.ShowCourses showCourses) throws RemoteException{
+	(es.upm.fi.sos.t3.usermanagement.ShowCourses showCourses) throws RemoteException{
 		ShowCoursesResponse response = new ShowCoursesResponse();
 		CourseResponse cr = new CourseResponse();
 		cr.setResult(false);
@@ -138,8 +138,8 @@ public class UserManagementWSSkeleton{
 			return response;
 		}
 		if (!UserManagementWSSkeleton.activeUsers.contains(this.sessionUser.getName())){
-    		return response;
-	    }
+			return response;
+		}
 		if (showCourses.getArgs0().getCourse() < 1 || showCourses.getArgs0().getCourse() > 4)
 			return response;
 		UPMCoursesStub upc = new UPMCoursesStub();
@@ -159,7 +159,7 @@ public class UserManagementWSSkeleton{
 	 * @return showAllGradesResponse 
 	 */
 	public es.upm.fi.sos.t3.usermanagement.ShowAllGradesResponse showAllGrades
-			(es.upm.fi.sos.t3.usermanagement.ShowAllGrades showAllGrades){
+	(es.upm.fi.sos.t3.usermanagement.ShowAllGrades showAllGrades){
 		ShowAllGradesResponse response = new ShowAllGradesResponse();
 		GradesResponse r = new GradesResponse();
 		r.setResult(false);
@@ -167,13 +167,13 @@ public class UserManagementWSSkeleton{
 		if(!this.isLogged)
 			return response;
 		if (!UserManagementWSSkeleton.activeUsers.contains(this.sessionUser.getName())){
-    		return response;
-	    }
+			return response;
+		}
 		HashMap<String, Double> grades = userGrades.get(sessionUser.getName());
 		Set<String> courses = grades.keySet();
 		ArrayList<String> coursesList = new ArrayList<>(); 
 		ArrayList<Double> gradesList = new ArrayList<>();
-		
+
 		for (String k : courses) {
 			Double act = grades.get(k);
 			if (gradesList.isEmpty()) { // Si array vacio inserto al principio
@@ -213,7 +213,7 @@ public class UserManagementWSSkeleton{
 	 * @return addUserResponse 
 	 */
 	public es.upm.fi.sos.t3.usermanagement.AddUserResponse addUser
-			(es.upm.fi.sos.t3.usermanagement.AddUser addUser){
+	(es.upm.fi.sos.t3.usermanagement.AddUser addUser){
 		AddUserResponse response = new AddUserResponse();
 		Response r = new Response();
 		r.setResponse(false);	// False initialization 
@@ -228,14 +228,13 @@ public class UserManagementWSSkeleton{
 			return response;	// False
 		}
 		if (!UserManagementWSSkeleton.activeUsers.contains(this.sessionUser.getName())){
-    		return response;
-	    }
+			return response;
+		}
 		// Add the user
 		UserManagementWSSkeleton.users.put(user.getName(), user);
 		r.setResponse(true);
 		return response;	// True
 	}
-
 
 	/**
 	 * Removes a user
@@ -244,42 +243,42 @@ public class UserManagementWSSkeleton{
 	 * @return removeUserResponse 
 	 */
 	public es.upm.fi.sos.t3.usermanagement.RemoveUserResponse removeUser
-			(es.upm.fi.sos.t3.usermanagement.RemoveUser removeUser){
+	(es.upm.fi.sos.t3.usermanagement.RemoveUser removeUser){
 		RemoveUserResponse response = new RemoveUserResponse();    
-        Response r = new Response();
-        r.setResponse(false);
-        response.set_return(r);
-        if(!this.isLogged || UserManagementWSSkeleton.users.get(this.sessionUser.getName()) == null) {
-        	return response;
-        }
-        // Nobody can remove the admin
-        if (removeUser.getArgs0().getUsername().equals("admin")) {
-        	return response;
-        }
-        if(this.sessionUser.getName().equals("admin")) {
-        	UserManagementWSSkeleton.users.remove(removeUser.getArgs0().getUsername());
-        	while (UserManagementWSSkeleton.activeUsers.contains(removeUser.getArgs0().getUsername())) {
-            	UserManagementWSSkeleton.activeUsers.remove(removeUser.getArgs0().getUsername());
-            }
-        	UserManagementWSSkeleton.userGrades.remove(removeUser.getArgs0().getUsername());
-            r.setResponse(true);
-            return response;
-        } 
-        else {
-            if(!UserManagementWSSkeleton.activeUsers.contains(removeUser.getArgs0().getUsername())) {
-            	return response;
-            }
-            if(!this.sessionUser.getName().equals(removeUser.getArgs0().getUsername())) {
-            	return response;
-            }
-            UserManagementWSSkeleton.users.remove(removeUser.getArgs0().getUsername());
-            while (UserManagementWSSkeleton.activeUsers.contains(removeUser.getArgs0().getUsername())) {
-            	UserManagementWSSkeleton.activeUsers.remove(removeUser.getArgs0().getUsername());
-            }
+		Response r = new Response();
+		r.setResponse(false);
+		response.set_return(r);
+		if(!this.isLogged || UserManagementWSSkeleton.users.get(this.sessionUser.getName()) == null) {
+			return response;
+		}
+		// Nobody can remove the admin
+		if (removeUser.getArgs0().getUsername().equals("admin")) {
+			return response;
+		}
+		if(this.sessionUser.getName().equals("admin")) {
+			UserManagementWSSkeleton.users.remove(removeUser.getArgs0().getUsername());
+			while (UserManagementWSSkeleton.activeUsers.contains(removeUser.getArgs0().getUsername())) {
+				UserManagementWSSkeleton.activeUsers.remove(removeUser.getArgs0().getUsername());
+			}
 			UserManagementWSSkeleton.userGrades.remove(removeUser.getArgs0().getUsername());
-            r.setResponse(true);
-            return response;
-        }
+			r.setResponse(true);
+			return response;
+		} 
+		else {
+			if(!UserManagementWSSkeleton.activeUsers.contains(removeUser.getArgs0().getUsername())) {
+				return response;
+			}
+			if(!this.sessionUser.getName().equals(removeUser.getArgs0().getUsername())) {
+				return response;
+			}
+			UserManagementWSSkeleton.users.remove(removeUser.getArgs0().getUsername());
+			while (UserManagementWSSkeleton.activeUsers.contains(removeUser.getArgs0().getUsername())) {
+				UserManagementWSSkeleton.activeUsers.remove(removeUser.getArgs0().getUsername());
+			}
+			UserManagementWSSkeleton.userGrades.remove(removeUser.getArgs0().getUsername());
+			r.setResponse(true);
+			return response;
+		}
 	}
 
 	/**
@@ -290,35 +289,31 @@ public class UserManagementWSSkeleton{
 	 * @throws RemoteException 
 	 */
 	public es.upm.fi.sos.t3.usermanagement.AddCourseGradeResponse addCourseGrade
-			(es.upm.fi.sos.t3.usermanagement.AddCourseGrade addCourseGrade) throws RemoteException{
+	(es.upm.fi.sos.t3.usermanagement.AddCourseGrade addCourseGrade) throws RemoteException{
 		AddCourseGradeResponse response = new AddCourseGradeResponse();
 		Response r = new Response();
 		r.setResponse(false);
 		response.set_return(r);
-		
+
 		if(!this.isLogged) {
-			System.out.println("no esta logueado");
 			return response;
 		}
 		if(users.get(sessionUser.getName())==null) {
-			System.out.println("no existe usuairo");
-            return response;}
+			return response;}
 		if (!UserManagementWSSkeleton.activeUsers.contains(this.sessionUser.getName())){
-			System.out.println("no existe usuario activo");
-    		return response;
-	    }
+			return response;
+		}
 		UPMCoursesStub upc = new UPMCoursesStub();
 		CheckCourse chk = new CheckCourse();
 		chk.setArgs0(addCourseGrade.getArgs0().getCourse());
 		if(!upc.checkCourse(chk).get_return()) {
-			System.out.println("no existe la asignatura");
 			return response;
 		}
 		String course = addCourseGrade.getArgs0().getCourse(); // Asignatura a cambiar y nota que se le quiere poner
 		Double grade = addCourseGrade.getArgs0().getGrade();
 		if(grade < 0 || grade > 10) { // Comprobamos que la nota esta dentro de rango
-			System.out.println("la nota esta mal");
-			return response;}
+			return response;
+		}
 		HashMap<String, Double> hm = new HashMap<String, Double>(); // Creo un HashMap y le asigno las asignaturas del usuario actual
 		if(userGrades.get(sessionUser.getName()) != null) 
 			hm = userGrades.get(sessionUser.getName());
